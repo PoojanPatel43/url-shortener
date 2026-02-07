@@ -41,4 +41,7 @@ public interface UrlRepository extends JpaRepository<Url, Long> {
 
     @Query("SELECT SUM(u.clickCount) FROM Url u WHERE u.user = :user")
     Long getTotalClicksByUser(@Param("user") User user);
+
+    @Query("SELECT COUNT(u) FROM Url u WHERE u.isActive = true")
+    long countActiveUrls();
 }
