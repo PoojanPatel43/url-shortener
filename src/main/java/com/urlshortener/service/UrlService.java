@@ -42,6 +42,7 @@ public class UrlService {
     private int maxCustomAliasLength;
 
     private static final UrlValidator URL_VALIDATOR = new UrlValidator(new String[]{"http", "https"});
+    private static final int MAX_SHORT_CODE_GENERATION_ATTEMPTS = 10;
 
     @Transactional
     public UrlResponse createShortUrl(CreateUrlRequest request, User user) {
@@ -183,8 +184,8 @@ public class UrlService {
         do {
             shortCode = base62Encoder.generateRandom(shortUrlLength);
             attempts++;
-            if (attempts > 10) {
-                throw new RuntimeException("Failed to generate unique short code after 10 attempts");
+            if (attempts > MAX_SHORT_CODE_GENERATION_ATTEMPTS) {
+                throw new RuntimeException("Failed to generate unique short code after " + MAX_SHORT_CODE_GENERATION_ATTEMPTS + " attempts");
             }
         } while (urlRepository.existsByShortCode(shortCode));
         return shortCode;
