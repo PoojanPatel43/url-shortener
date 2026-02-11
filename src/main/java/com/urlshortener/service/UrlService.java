@@ -127,6 +127,7 @@ public class UrlService {
         }
 
         url = urlRepository.save(url);
+        log.info("Updated URL: {} by user: {}", shortCode, user.getEmail());
         return mapToResponse(url);
     }
 
