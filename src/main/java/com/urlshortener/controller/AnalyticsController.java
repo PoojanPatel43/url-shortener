@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,6 +30,8 @@ public class AnalyticsController {
     @Operation(summary = "Get analytics for a URL", description = "Returns detailed click analytics for a shortened URL")
     public ResponseEntity<ApiResponse<AnalyticsResponse>> getAnalytics(
             @Parameter(description = "The short code of the URL") @PathVariable String shortCode,
+            @Parameter(description = "Number of days to include in analytics (default: 30)")
+            @RequestParam(defaultValue = "30") int days,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         AnalyticsResponse analytics = analyticsService.getAnalytics(shortCode, userDetails.toUser());
