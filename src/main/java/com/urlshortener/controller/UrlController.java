@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/urls")
 @RequiredArgsConstructor
@@ -35,7 +37,9 @@ public class UrlController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         User user = userDetails != null ? userDetails.toUser() : null;
+        log.info("Creating short URL for: {}", request.getUrl());
         UrlResponse response = urlService.createShortUrl(request, user);
+        log.info("Short URL created: {}", response.getShortCode());
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("URL shortened successfully", response));
