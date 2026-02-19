@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api-keys")
 @RequiredArgsConstructor
@@ -33,7 +35,9 @@ public class ApiKeyController {
             @Valid @RequestBody ApiKeyRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        log.info("Creating API key: {}", request.getName());
         ApiKeyResponse response = apiKeyService.createApiKey(request, userDetails.toUser());
+        log.info("API key created successfully");
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("API key created successfully. Save this key - it won't be shown again!", response));
     }
