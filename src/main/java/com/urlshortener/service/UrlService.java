@@ -108,6 +108,7 @@ public class UrlService {
 
     @Transactional(readOnly = true)
     public Page<UrlResponse> getUserUrls(User user, Pageable pageable) {
+        log.debug("Fetching URLs for user: {}", user.getEmail());
         return urlRepository.findByUserOrderByCreatedAtDesc(user, pageable)
                 .map(this::mapToResponse);
     }
