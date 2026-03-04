@@ -101,6 +101,7 @@ public class UrlService {
 
     @Transactional(readOnly = true)
     public UrlResponse getUrlDetails(String shortCode, User user) {
+        log.debug("Fetching URL details for shortCode: {}", shortCode);
         Url url = getUrlByShortCode(shortCode);
         validateOwnership(url, user);
         return mapToResponse(url);
