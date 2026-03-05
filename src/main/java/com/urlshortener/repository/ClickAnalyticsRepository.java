@@ -44,4 +44,7 @@ public interface ClickAnalyticsRepository extends JpaRepository<ClickAnalytics, 
 
     @Query("SELECT COUNT(c) FROM ClickAnalytics c WHERE c.clickedAt >= :startDate")
     long countClicksSinceDate(@Param("startDate") LocalDateTime startDate);
+
+    @Query("SELECT COUNT(DISTINCT c.ipAddress) FROM ClickAnalytics c WHERE c.url = :url")
+    long countUniqueVisitorsByUrl(@Param("url") Url url);
 }
