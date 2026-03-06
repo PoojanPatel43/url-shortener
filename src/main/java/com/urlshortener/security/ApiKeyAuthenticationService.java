@@ -28,6 +28,7 @@ public class ApiKeyAuthenticationService {
     public UserDetails authenticateApiKey(String rawApiKey) {
         // API key format: prefix_randomString
         if (rawApiKey == null || !rawApiKey.contains("_")) {
+            log.debug("Invalid API key format");
             return null;
         }
 
@@ -42,7 +43,10 @@ public class ApiKeyAuthenticationService {
                     log.debug("API key authenticated: {}", apiKey.getPrefix());
                     return new CustomUserDetails(apiKey.getUser());
                 })
-                .orElse(null);
+                .orElseGet(() -> {
+                    log.warn("API key authentication failed");
+                    return null;
+                });
     }
 
     public String hashApiKey(String rawApiKey) {
