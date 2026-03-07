@@ -69,3 +69,4 @@ logging:
   level:
     com.urlshortener: INFO
     org.springframework.security: INFO
+    org.hibernate.SQL: WARN
