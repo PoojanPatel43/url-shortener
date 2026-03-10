@@ -41,12 +41,23 @@ public class UrlService {
     @Value("${app.url.max-custom-alias-length:20}")
     private int maxCustomAliasLength;
 
+    @Value("${app.max-urls-per-user:100}")
+    private int maxUrlsPerUser;
+
     private static final UrlValidator URL_VALIDATOR = new UrlValidator(new String[]{"http", "https"});
     private static final int MAX_SHORT_CODE_GENERATION_ATTEMPTS = 10;
 
     @Transactional
     public UrlResponse createShortUrl(CreateUrlRequest request, User user) {
         validateUrl(request.getUrl());
+
+        // Check user URL limit
+        if (user != null) {
+            long userUrlCount = urlRepository.countByUser(user);
+            if (userUrlCount >= maxUrlsPerUser) {
+                throw new BadRequestException("Maximum URL limit reached. You can create up to " + maxUrlsPerUser + " URLs.");
+            }
+        }
 
         String shortCode;
         if (request.getCustomAlias() != null && !request.getCustomAlias().isBlank()) {
