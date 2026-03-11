@@ -89,8 +89,13 @@ public class AuthService {
 
     @Transactional
     public void logout(String refreshTokenValue) {
-        refreshTokenRepository.deleteByToken(refreshTokenValue);
-        log.info("User logged out");
+        RefreshToken token = refreshTokenRepository.findByToken(refreshTokenValue).orElse(null);
+        if (token != null) {
+            log.info("User logged out: {}", token.getUser().getEmail());
+            refreshTokenRepository.deleteByToken(refreshTokenValue);
+        } else {
+            log.debug("Logout attempted with invalid token");
+        }
     }
 
     private AuthResponse createAuthResponse(User user) {
