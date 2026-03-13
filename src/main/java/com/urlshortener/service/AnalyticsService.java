@@ -62,6 +62,7 @@ public class AnalyticsService {
 
         LocalDateTime now = LocalDateTime.now();
         long totalClicks = url.getClickCount();
+        long uniqueVisitors = clickAnalyticsRepository.countUniqueVisitorsByUrl(url);
         long clicks24h = clickAnalyticsRepository.countClicksSince(url, now.minusHours(24));
         long clicks7d = clickAnalyticsRepository.countClicksSince(url, now.minusDays(7));
         long clicks30d = clickAnalyticsRepository.countClicksSince(url, now.minusDays(30));
@@ -80,6 +81,7 @@ public class AnalyticsService {
 
         return AnalyticsResponse.builder()
                 .totalClicks(totalClicks)
+                .uniqueVisitors(uniqueVisitors)
                 .clicksLast24Hours(clicks24h)
                 .clicksLast7Days(clicks7d)
                 .clicksLast30Days(clicks30d)

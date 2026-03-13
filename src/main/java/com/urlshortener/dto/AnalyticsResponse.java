@@ -15,6 +15,7 @@ import java.util.Map;
 public class AnalyticsResponse {
 
     private Long totalClicks;
+    private Long uniqueVisitors;
     private Long clicksLast24Hours;
     private Long clicksLast7Days;
     private Long clicksLast30Days;
