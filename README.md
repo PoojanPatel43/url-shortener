@@ -10,10 +10,11 @@ A production-ready URL shortening service built with Spring Boot, featuring JWT 
 ## Features
 
 - **URL Shortening**: Create short URLs with custom aliases or auto-generated codes
-- **Click Analytics**: Track clicks with detailed statistics (browser, device, OS, country, referer)
+- **Click Analytics**: Track clicks with detailed statistics (browser, device, OS, country, referer) and unique visitor counts
 - **User Authentication**: JWT-based authentication with refresh tokens
 - **API Key Management**: Generate API keys for programmatic access
 - **Rate Limiting**: Protect the API with configurable rate limits (60/min, 1000/hour)
+- **User Quotas**: Configurable maximum URLs per user (default: 100)
 - **Admin Dashboard**: Platform statistics and user management for admins
 - **Docker Support**: Ready for containerized deployment
 
