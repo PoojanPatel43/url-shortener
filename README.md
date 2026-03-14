@@ -166,10 +166,13 @@ Key configuration options in `application.yml`:
 |----------|-------------|---------|
 | `app.base-url` | Base URL for short links | `http://localhost:8080/api/r` |
 | `app.short-url-length` | Length of generated short codes | `7` |
+| `app.max-urls-per-user` | Max URLs per user | `100` |
 | `app.url.default-expiration-days` | Default URL expiration | `365` |
 | `app.url.max-custom-alias-length` | Max custom alias length | `20` |
 | `jwt.expiration` | JWT token expiration (ms) | `86400000` (24h) |
 | `jwt.refresh-expiration` | Refresh token expiration (ms) | `604800000` (7d) |
+| `rate-limit.requests-per-minute` | Rate limit per minute | `60` |
+| `rate-limit.requests-per-hour` | Rate limit per hour | `1000` |
 
 ## Project Structure
 
