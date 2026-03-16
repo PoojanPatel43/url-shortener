@@ -10,7 +10,8 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
+    defer-datasource-initialization: true
     show-sql: false
     properties:
       hibernate:
@@ -31,6 +32,7 @@ server:
 app:
   base-url: ${BASE_URL:http://localhost:8080}
   short-url-length: 7
+  max-urls-per-user: ${MAX_URLS_PER_USER:100}
 
   jwt:
     secret: ${JWT_SECRET:your-256-bit-secret-key-here-must-be-at-least-32-characters}
@@ -68,3 +70,4 @@ logging:
   level:
     com.urlshortener: INFO
     org.springframework.security: INFO
+    org.hibernate.SQL: WARN

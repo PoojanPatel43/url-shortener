@@ -41,6 +41,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Page<UserResponse>>> getAllUsers(
             @PageableDefault(size = 20) Pageable pageable) {
 
+        log.info("Admin fetching all users - page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
         Page<UserResponse> users = adminService.getAllUsers(pageable);
         return ResponseEntity.ok(ApiResponse.success(users));
     }
@@ -50,6 +51,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(
             @Parameter(description = "The ID of the user") @PathVariable Long userId) {
 
+        log.info("Admin fetching user details for ID: {}", userId);
         UserResponse user = adminService.getUserById(userId);
         return ResponseEntity.ok(ApiResponse.success(user));
     }
@@ -59,7 +61,9 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Void>> toggleUserStatus(
             @Parameter(description = "The ID of the user") @PathVariable Long userId) {
 
+        log.info("Admin toggling status for user ID: {}", userId);
         adminService.toggleUserStatus(userId);
+        log.info("User status toggled successfully for ID: {}", userId);
         return ResponseEntity.ok(ApiResponse.success("User status toggled successfully", null));
     }
 
@@ -68,7 +72,9 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Void>> deleteUser(
             @Parameter(description = "The ID of the user") @PathVariable Long userId) {
 
+        log.warn("Admin deleting user ID: {}", userId);
         adminService.deleteUser(userId);
+        log.info("User deleted successfully: {}", userId);
         return ResponseEntity.ok(ApiResponse.success("User deleted successfully", null));
     }
 }
