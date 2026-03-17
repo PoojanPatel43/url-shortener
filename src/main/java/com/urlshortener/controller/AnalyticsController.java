@@ -36,8 +36,10 @@ public class AnalyticsController {
             @RequestParam(defaultValue = "30") int days,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        log.info("Fetching analytics for shortCode: {}", shortCode);
+        log.info("User {} fetching analytics for shortCode: {}", userDetails.getUsername(), shortCode);
         AnalyticsResponse analytics = analyticsService.getAnalytics(shortCode, userDetails.toUser());
+        log.debug("Analytics retrieved - Total clicks: {}, Unique visitors: {}",
+                analytics.getTotalClicks(), analytics.getUniqueVisitors());
         return ResponseEntity.ok(ApiResponse.success(analytics));
     }
 }
