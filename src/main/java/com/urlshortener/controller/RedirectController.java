@@ -41,7 +41,8 @@ public class RedirectController {
             @Parameter(description = "The short code of the URL") @PathVariable String shortCode,
             HttpServletRequest request) {
 
-        log.debug("Redirect request for short code: {}", shortCode);
+        String clientIp = getClientIpAddress(request);
+        log.info("Redirect request for short code: {} from IP: {}", shortCode, clientIp);
 
         // Get the URL entity for analytics
         Url url = urlService.getUrlByShortCode(shortCode);
@@ -52,10 +53,28 @@ public class RedirectController {
         // Record analytics asynchronously
         analyticsService.recordClick(url, request);
 
+        log.debug("Redirecting {} to: {}", shortCode, originalUrl);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create(originalUrl));
         headers.setCacheControl("no-cache, no-store, must-revalidate");
 
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
+    }
+
+    private String getClientIpAddress(HttpServletRequest request) {
+        String[] headerNames = {
+                "X-Forwarded-For",
+                "X-Real-IP",
+                "Proxy-Client-IP"
+        };
+
+        for (String header : headerNames) {
+            String ip = request.getHeader(header);
+            if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
+                return ip.split(",")[0].trim();
+            }
+        }
+        return request.getRemoteAddr();
     }
 }
