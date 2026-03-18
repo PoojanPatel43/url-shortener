@@ -41,7 +41,9 @@ public class UserController {
             @Valid @RequestBody UpdateUserRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        log.info("User {} updating profile", userDetails.getUsername());
         UserResponse response = userService.updateUser(userDetails.toUser(), request);
+        log.info("Profile updated successfully for user: {}", userDetails.getUsername());
         return ResponseEntity.ok(ApiResponse.success("Profile updated successfully", response));
     }
 
@@ -50,7 +52,9 @@ public class UserController {
     public ResponseEntity<ApiResponse<Void>> deleteCurrentUser(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        log.warn("User {} deleting their account", userDetails.getUsername());
         userService.deleteUser(userDetails.toUser());
+        log.info("Account deleted successfully for user: {}", userDetails.getUsername());
         return ResponseEntity.ok(ApiResponse.success("Account deleted successfully", null));
     }
 }
