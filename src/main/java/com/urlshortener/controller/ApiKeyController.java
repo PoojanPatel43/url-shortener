@@ -47,6 +47,7 @@ public class ApiKeyController {
     public ResponseEntity<ApiResponse<List<ApiKeyResponse>>> listApiKeys(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        log.debug("User {} listing API keys", userDetails.getUsername());
         List<ApiKeyResponse> keys = apiKeyService.getUserApiKeys(userDetails.toUser());
         return ResponseEntity.ok(ApiResponse.success(keys));
     }
@@ -57,7 +58,9 @@ public class ApiKeyController {
             @Parameter(description = "The ID of the API key") @PathVariable Long keyId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        log.info("User {} revoking API key ID: {}", userDetails.getUsername(), keyId);
         apiKeyService.revokeApiKey(keyId, userDetails.toUser());
+        log.info("API key revoked successfully: {}", keyId);
         return ResponseEntity.ok(ApiResponse.success("API key revoked successfully", null));
     }
 
@@ -67,7 +70,9 @@ public class ApiKeyController {
             @Parameter(description = "The ID of the API key") @PathVariable Long keyId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        log.warn("User {} deleting API key ID: {}", userDetails.getUsername(), keyId);
         apiKeyService.deleteApiKey(keyId, userDetails.toUser());
+        log.info("API key deleted successfully: {}", keyId);
         return ResponseEntity.ok(ApiResponse.success("API key deleted successfully", null));
     }
 }
