@@ -42,13 +42,16 @@ public class AuthController {
     @PostMapping("/refresh")
     @Operation(summary = "Refresh access token using refresh token")
     public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(@RequestBody RefreshTokenRequest request) {
+        log.debug("Token refresh request received");
         AuthResponse response = authService.refreshToken(request.getRefreshToken());
+        log.info("Token refresh successful for user: {}", response.getUser().getEmail());
         return ResponseEntity.ok(ApiResponse.success("Token refreshed", response));
     }
 
     @PostMapping("/logout")
     @Operation(summary = "Logout and invalidate refresh token")
     public ResponseEntity<ApiResponse<Void>> logout(@RequestBody RefreshTokenRequest request) {
+        log.debug("Logout request received");
         authService.logout(request.getRefreshToken());
         return ResponseEntity.ok(ApiResponse.success("Logged out successfully", null));
     }
