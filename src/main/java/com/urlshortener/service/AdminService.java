@@ -27,6 +27,8 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public AdminStatsResponse getStats() {
+        log.debug("Fetching platform statistics");
+
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startOfDay = now.toLocalDate().atStartOfDay();
         LocalDateTime startOfWeek = now.minusDays(7);
@@ -39,6 +41,9 @@ public class AdminService {
         long clicksToday = clickAnalyticsRepository.countClicksSinceDate(startOfDay);
         long clicksThisWeek = clickAnalyticsRepository.countClicksSinceDate(startOfWeek);
         long clicksThisMonth = clickAnalyticsRepository.countClicksSinceDate(startOfMonth);
+
+        log.info("Platform stats - Users: {}, URLs: {}, Active URLs: {}, Total clicks: {}",
+                totalUsers, totalUrls, activeUrls, totalClicks);
 
         return AdminStatsResponse.builder()
                 .totalUsers(totalUsers)
