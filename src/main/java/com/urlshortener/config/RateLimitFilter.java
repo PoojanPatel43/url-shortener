@@ -43,6 +43,12 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
         if (probe.isConsumed()) {
             response.addHeader("X-Rate-Limit-Remaining", String.valueOf(probe.getRemainingTokens()));
+
+            // Log warning when approaching rate limit
+            if (probe.getRemainingTokens() < 10) {
+                log.debug("Client {} approaching rate limit. Remaining: {}", clientKey, probe.getRemainingTokens());
+            }
+
             filterChain.doFilter(request, response);
         } else {
             long waitTimeSeconds = TimeUnit.NANOSECONDS.toSeconds(probe.getNanosToWaitForRefill());
