@@ -24,11 +24,15 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponse getCurrentUser(User user) {
+        log.debug("Fetching profile for user: {}", user.getId());
+
         User fullUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Long totalUrls = urlRepository.countByUser(fullUser);
         Long totalClicks = urlRepository.getTotalClicksByUser(fullUser);
+
+        log.debug("User profile stats - URLs: {}, Total clicks: {}", totalUrls, totalClicks);
 
         return UserResponse.builder()
                 .id(fullUser.getId())
