@@ -64,10 +64,13 @@ public class ApiKeyService {
 
     @Transactional(readOnly = true)
     public List<ApiKeyResponse> getUserApiKeys(User user) {
-        return apiKeyRepository.findByUserOrderByCreatedAtDesc(user)
+        log.debug("Fetching API keys for user: {}", user.getEmail());
+        List<ApiKeyResponse> keys = apiKeyRepository.findByUserOrderByCreatedAtDesc(user)
                 .stream()
                 .map(key -> mapToResponse(key, null))
                 .collect(Collectors.toList());
+        log.debug("Found {} API keys for user: {}", keys.size(), user.getEmail());
+        return keys;
     }
 
     @Transactional
