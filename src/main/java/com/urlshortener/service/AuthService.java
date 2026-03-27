@@ -36,7 +36,9 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
+        log.debug("Registration attempt for email: {}", request.getEmail());
         if (userRepository.existsByEmail(request.getEmail())) {
+            log.warn("Registration failed - email already exists: {}", request.getEmail());
             throw new BadRequestException("Email is already registered");
         }
 
@@ -54,6 +56,7 @@ public class AuthService {
 
     @Transactional
     public AuthResponse login(AuthRequest request) {
+        log.debug("Login attempt for email: {}", request.getEmail());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -74,6 +77,7 @@ public class AuthService {
                 .orElseThrow(() -> new BadRequestException("Invalid refresh token"));
 
         if (refreshToken.isExpired()) {
+            log.warn("Expired refresh token used for user: {}", refreshToken.getUser().getEmail());
             refreshTokenRepository.delete(refreshToken);
             throw new BadRequestException("Refresh token has expired");
         }
