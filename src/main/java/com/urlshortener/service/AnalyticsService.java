@@ -57,6 +57,7 @@ public class AnalyticsService {
 
     @Transactional(readOnly = true)
     public AnalyticsResponse getAnalytics(String shortCode, User user) {
+        log.debug("Fetching analytics for shortCode: {} by user: {}", shortCode, user.getEmail());
         Url url = urlService.getUrlByShortCode(shortCode);
         validateOwnership(url, user);
 
@@ -78,6 +79,9 @@ public class AnalyticsService {
                 clickAnalyticsRepository.getOsStats(url), totalClicks);
         List<AnalyticsResponse.StatEntry> topReferers = convertToStatEntries(
                 clickAnalyticsRepository.getRefererStats(url), totalClicks);
+
+        log.debug("Analytics for {} - clicks: {}, unique: {}, 24h: {}, 7d: {}, 30d: {}",
+                shortCode, totalClicks, uniqueVisitors, clicks24h, clicks7d, clicks30d);
 
         return AnalyticsResponse.builder()
                 .totalClicks(totalClicks)
