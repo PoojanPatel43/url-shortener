@@ -94,10 +94,12 @@ public class UrlService {
                 .orElseThrow(() -> new ResourceNotFoundException("URL", "shortCode", shortCode));
 
         if (!url.getIsActive()) {
+            log.debug("Access attempt on deactivated URL: {}", shortCode);
             throw new ResourceNotFoundException("URL has been deactivated");
         }
 
         if (url.isExpired()) {
+            log.debug("Access attempt on expired URL: {}", shortCode);
             throw new ResourceNotFoundException("URL has expired");
         }
 
