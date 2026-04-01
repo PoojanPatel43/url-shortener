@@ -33,6 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // First, try API key authentication
             String apiKey = getApiKeyFromRequest(request);
             if (StringUtils.hasText(apiKey)) {
+                log.debug("API key authentication attempt for {} {}", request.getMethod(), request.getRequestURI());
                 UserDetails userDetails = apiKeyAuthenticationService.authenticateApiKey(apiKey);
                 if (userDetails != null) {
                     setAuthentication(userDetails, request);
@@ -45,6 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request);
             if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
                 String email = jwtTokenProvider.getEmailFromToken(jwt);
+                log.debug("JWT authenticated user: {} for {} {}", email, request.getMethod(), request.getRequestURI());
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 setAuthentication(userDetails, request);
             }
