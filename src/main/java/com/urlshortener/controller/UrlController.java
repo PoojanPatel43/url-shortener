@@ -72,6 +72,7 @@ public class UrlController {
             @Valid @RequestBody CreateUrlRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        log.info("User {} updating URL: {}", userDetails.getUsername(), shortCode);
         UrlResponse response = urlService.updateUrl(shortCode, request, userDetails.toUser());
         return ResponseEntity.ok(ApiResponse.success("URL updated successfully", response));
     }
@@ -82,6 +83,7 @@ public class UrlController {
             @Parameter(description = "The short code of the URL") @PathVariable String shortCode,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        log.warn("User {} deleting URL: {}", userDetails.getUsername(), shortCode);
         urlService.deleteUrl(shortCode, userDetails.toUser());
         return ResponseEntity.ok(ApiResponse.success("URL deleted successfully", null));
     }
