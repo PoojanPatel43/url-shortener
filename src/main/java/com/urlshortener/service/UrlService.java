@@ -55,6 +55,7 @@ public class UrlService {
         if (user != null) {
             long userUrlCount = urlRepository.countByUser(user);
             if (userUrlCount >= maxUrlsPerUser) {
+                log.warn("User {} reached URL limit of {}", user.getEmail(), maxUrlsPerUser);
                 throw new BadRequestException("Maximum URL limit reached. You can create up to " + maxUrlsPerUser + " URLs.");
             }
         }
