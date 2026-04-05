@@ -174,20 +174,24 @@ public class UrlService {
 
     private void validateUrl(String url) {
         if (!URL_VALIDATOR.isValid(url)) {
+            log.debug("Invalid URL format rejected: {}", url);
             throw new BadRequestException("Invalid URL format: " + url);
         }
     }
 
     private String validateAndGetCustomAlias(String alias) {
         if (alias.length() > maxCustomAliasLength) {
+            log.debug("Custom alias too long: {} chars", alias.length());
             throw new BadRequestException("Custom alias must not exceed " + maxCustomAliasLength + " characters");
         }
 
         if (!base62Encoder.isValid(alias)) {
+            log.debug("Custom alias contains invalid characters: {}", alias);
             throw new BadRequestException("Custom alias can only contain alphanumeric characters");
         }
 
         if (urlRepository.existsByShortCode(alias)) {
+            log.debug("Custom alias already taken: {}", alias);
             throw new BadRequestException("Custom alias is already taken: " + alias);
         }
 
