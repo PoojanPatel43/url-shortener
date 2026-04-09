@@ -31,6 +31,8 @@ public class RateLimitConfig {
     }
 
     private Bucket createBucket(String key) {
+        log.debug("Creating rate limit bucket for key: {} (rpm: {}, rph: {})", key, requestsPerMinute, requestsPerHour);
+
         Bandwidth perMinuteLimit = Bandwidth.classic(
                 requestsPerMinute,
                 Refill.greedy(requestsPerMinute, Duration.ofMinutes(1))
