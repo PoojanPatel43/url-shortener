@@ -34,7 +34,9 @@ public class ApiKeyService {
 
     @Transactional
     public ApiKeyResponse createApiKey(ApiKeyRequest request, User user) {
-        if (apiKeyRepository.countByUser(user) >= MAX_API_KEYS_PER_USER) {
+        long currentCount = apiKeyRepository.countByUser(user);
+        if (currentCount >= MAX_API_KEYS_PER_USER) {
+            log.warn("User {} reached API key limit ({}/{})", user.getEmail(), currentCount, MAX_API_KEYS_PER_USER);
             throw new BadRequestException("Maximum number of API keys (" + MAX_API_KEYS_PER_USER + ") reached");
         }
 
