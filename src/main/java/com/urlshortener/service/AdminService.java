@@ -99,9 +99,10 @@ public class AdminService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        user.setEnabled(!user.getEnabled());
+        boolean previousStatus = user.getEnabled();
+        user.setEnabled(!previousStatus);
         userRepository.save(user);
-        log.info("User {} status toggled to: {}", user.getEmail(), user.getEnabled());
+        log.info("User {} status changed: {} -> {}", user.getEmail(), previousStatus, user.getEnabled());
     }
 
     @Transactional
@@ -109,7 +110,8 @@ public class AdminService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
+        long userUrls = urlRepository.countByUser(user);
         userRepository.delete(user);
-        log.info("Admin deleted user: {}", user.getEmail());
+        log.warn("Admin deleted user: {} (had {} URLs)", user.getEmail(), userUrls);
     }
 }
