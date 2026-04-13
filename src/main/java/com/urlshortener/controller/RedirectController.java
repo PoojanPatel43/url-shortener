@@ -53,7 +53,9 @@ public class RedirectController {
         // Record analytics asynchronously
         analyticsService.recordClick(url, request);
 
-        log.debug("Redirecting {} to: {}", shortCode, originalUrl);
+        String userAgent = request.getHeader("User-Agent");
+        log.debug("Redirecting {} to: {} (User-Agent: {})", shortCode, originalUrl,
+                userAgent != null ? userAgent.substring(0, Math.min(userAgent.length(), 50)) : "unknown");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create(originalUrl));
