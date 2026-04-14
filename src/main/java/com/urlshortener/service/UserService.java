@@ -60,6 +60,7 @@ public class UserService {
             }
 
             if (!passwordEncoder.matches(request.getCurrentPassword(), fullUser.getPassword())) {
+                log.warn("Failed password change attempt for user: {}", fullUser.getEmail());
                 throw new BadRequestException("Current password is incorrect");
             }
 
