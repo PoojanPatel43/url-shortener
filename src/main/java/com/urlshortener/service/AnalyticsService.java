@@ -49,7 +49,7 @@ public class AnalyticsService {
             clickAnalyticsRepository.save(analytics);
             urlService.incrementClickCount(url.getId());
 
-            log.debug("Recorded click for URL: {}", url.getShortCode());
+            log.debug("Recorded click for URL: {} from {} via {}", url.getShortCode(), ipAddress, parseBrowser(userAgent));
         } catch (Exception e) {
             log.error("Failed to record click analytics for URL: {}", url.getShortCode(), e);
         }
