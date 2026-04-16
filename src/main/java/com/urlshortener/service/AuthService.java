@@ -136,9 +136,12 @@ public class AuthService {
     @Scheduled(cron = "0 0 2 * * *") // Run at 2 AM daily
     @Transactional
     public void cleanupExpiredRefreshTokens() {
+        log.debug("Starting scheduled refresh token cleanup");
         int deleted = refreshTokenRepository.deleteExpiredTokens(LocalDateTime.now());
         if (deleted > 0) {
             log.info("Cleaned up {} expired refresh tokens", deleted);
+        } else {
+            log.debug("No expired refresh tokens to clean up");
         }
     }
 }
