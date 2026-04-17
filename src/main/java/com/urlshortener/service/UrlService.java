@@ -166,9 +166,12 @@ public class UrlService {
     @Scheduled(cron = "0 0 * * * *") // Run every hour
     @Transactional
     public void deactivateExpiredUrls() {
+        log.debug("Starting scheduled expired URL cleanup");
         int count = urlRepository.deactivateExpiredUrls(LocalDateTime.now());
         if (count > 0) {
             log.info("Deactivated {} expired URLs", count);
+        } else {
+            log.debug("No expired URLs to deactivate");
         }
     }
 
