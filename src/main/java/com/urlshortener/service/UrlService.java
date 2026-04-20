@@ -83,7 +83,8 @@ public class UrlService {
                 .build();
 
         url = urlRepository.save(url);
-        log.info("Created short URL: {} -> {}", shortCode, request.getUrl());
+        log.info("Created short URL: {} -> {} by user: {}", shortCode, request.getUrl(),
+                user != null ? user.getEmail() : "anonymous");
 
         return mapToResponse(url);
     }
