@@ -10,7 +10,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "click_analytics")
+@Table(name = "click_analytics", indexes = {
+        @Index(name = "idx_click_analytics_clicked_at", columnList = "clicked_at"),
+        @Index(name = "idx_click_analytics_url_clicked_at", columnList = "url_id, clicked_at")
+})
 @Data
 @Builder
 @NoArgsConstructor
