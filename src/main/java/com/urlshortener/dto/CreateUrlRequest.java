@@ -1,6 +1,7 @@
 package com.urlshortener.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,5 +22,6 @@ public class CreateUrlRequest {
     @Size(min = 3, max = 20, message = "Custom alias must be between 3 and 20 characters")
     private String customAlias;
 
+    @Positive(message = "Expiration days must be a positive number")
     private Integer expirationDays;
 }
