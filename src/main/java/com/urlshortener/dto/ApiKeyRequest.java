@@ -1,6 +1,7 @@
 package com.urlshortener.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,5 +18,6 @@ public class ApiKeyRequest {
     @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters")
     private String name;
 
+    @Positive(message = "Expiration days must be a positive number")
     private Integer expirationDays;
 }
