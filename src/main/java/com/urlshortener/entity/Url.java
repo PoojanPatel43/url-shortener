@@ -13,7 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "urls")
+@Table(name = "urls", indexes = {
+        @Index(name = "idx_urls_expires_at", columnList = "expires_at"),
+        @Index(name = "idx_urls_user_id", columnList = "user_id")
+})
 @Data
 @Builder
 @NoArgsConstructor
