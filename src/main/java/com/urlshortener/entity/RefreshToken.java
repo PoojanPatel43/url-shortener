@@ -11,7 +11,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "refresh_tokens")
+@Table(name = "refresh_tokens", indexes = {
+        @Index(name = "idx_refresh_tokens_expires_at", columnList = "expires_at")
+})
 @Data
 @Builder
 @NoArgsConstructor
