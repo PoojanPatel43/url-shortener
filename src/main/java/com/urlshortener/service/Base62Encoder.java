@@ -79,4 +79,13 @@ public class Base62Encoder {
         }
         return true;
     }
+
+    /**
+     * Returns the character set used for encoding.
+     *
+     * @return the Base62 character set string
+     */
+    public String getCharset() {
+        return BASE62_CHARS;
+    }
 }
