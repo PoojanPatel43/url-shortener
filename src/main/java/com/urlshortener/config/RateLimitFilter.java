@@ -99,9 +99,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        // Don't rate limit health checks and swagger docs
+        // Don't rate limit health checks, swagger docs, and favicon
         return path.startsWith("/api/actuator") ||
                 path.startsWith("/api/swagger") ||
-                path.startsWith("/api/api-docs");
+                path.startsWith("/api/api-docs") ||
+                path.equals("/favicon.ico");
     }
 }
