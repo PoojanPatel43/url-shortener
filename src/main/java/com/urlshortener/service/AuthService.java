@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -34,9 +35,18 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
 
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         log.debug("Registration attempt for email: {}", request.getEmail());
+
+        if (!EMAIL_PATTERN.matcher(request.getEmail()).matches()) {
+            log.warn("Registration failed - invalid email format: {}", request.getEmail());
+            throw new BadRequestException("Invalid email format");
+        }
+
         if (userRepository.existsByEmail(request.getEmail())) {
             log.warn("Registration failed - email already exists: {}", request.getEmail());
             throw new BadRequestException("Email is already registered");
