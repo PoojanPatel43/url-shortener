@@ -27,6 +27,7 @@ public class ApiKeyService {
     private static final int MAX_API_KEYS_PER_USER = 5;
     private static final int API_KEY_LENGTH = 32;
     private static final String API_KEY_PREFIX = "ush";
+    private static final int MAX_API_KEY_NAME_LENGTH = 50;
 
     private final ApiKeyRepository apiKeyRepository;
     private final ApiKeyAuthenticationService apiKeyAuthenticationService;
@@ -34,6 +35,13 @@ public class ApiKeyService {
 
     @Transactional
     public ApiKeyResponse createApiKey(ApiKeyRequest request, User user) {
+        if (request.getName() == null || request.getName().isBlank()) {
+            throw new BadRequestException("API key name is required");
+        }
+        if (request.getName().length() > MAX_API_KEY_NAME_LENGTH) {
+            throw new BadRequestException("API key name must not exceed " + MAX_API_KEY_NAME_LENGTH + " characters");
+        }
+
         long currentCount = apiKeyRepository.countByUser(user);
         if (currentCount >= MAX_API_KEYS_PER_USER) {
             log.warn("User {} reached API key limit ({}/{})", user.getEmail(), currentCount, MAX_API_KEYS_PER_USER);
