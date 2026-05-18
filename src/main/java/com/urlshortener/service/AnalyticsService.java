@@ -152,7 +152,7 @@ public class AnalyticsService {
         if (userAgent == null) return "Unknown";
         userAgent = userAgent.toLowerCase();
 
-        if (userAgent.contains("mobile") || userAgent.contains("android") && userAgent.contains("mobile")) {
+        if (userAgent.contains("mobile") || (userAgent.contains("android") && !userAgent.contains("tablet"))) {
             return "Mobile";
         } else if (userAgent.contains("tablet") || userAgent.contains("ipad")) {
             return "Tablet";
