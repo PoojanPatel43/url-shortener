@@ -31,7 +31,7 @@ public class RedirectController {
     private final UrlService urlService;
     private final AnalyticsService analyticsService;
 
-    @GetMapping("/{shortCode}")
+    @GetMapping("/{shortCode:[A-Za-z0-9]+}")
     @Operation(summary = "Redirect to original URL", description = "Redirects to the original URL associated with the short code")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "302", description = "Redirect to original URL"),

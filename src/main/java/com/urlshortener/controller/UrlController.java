@@ -55,7 +55,7 @@ public class UrlController {
         return ResponseEntity.ok(ApiResponse.success(urls));
     }
 
-    @GetMapping("/{shortCode}")
+    @GetMapping("/{shortCode:[A-Za-z0-9]+}")
     @Operation(summary = "Get URL details", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ApiResponse<UrlResponse>> getUrlDetails(
             @Parameter(description = "The short code of the URL") @PathVariable String shortCode,
@@ -65,7 +65,7 @@ public class UrlController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-    @PutMapping("/{shortCode}")
+    @PutMapping("/{shortCode:[A-Za-z0-9]+}")
     @Operation(summary = "Update a URL", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ApiResponse<UrlResponse>> updateUrl(
             @Parameter(description = "The short code of the URL") @PathVariable String shortCode,
@@ -77,7 +77,7 @@ public class UrlController {
         return ResponseEntity.ok(ApiResponse.success("URL updated successfully", response));
     }
 
-    @DeleteMapping("/{shortCode}")
+    @DeleteMapping("/{shortCode:[A-Za-z0-9]+}")
     @Operation(summary = "Delete a URL", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ApiResponse<Void>> deleteUrl(
             @Parameter(description = "The short code of the URL") @PathVariable String shortCode,
