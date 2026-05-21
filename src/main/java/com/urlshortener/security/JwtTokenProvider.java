@@ -25,6 +25,8 @@ public class JwtTokenProvider {
     @Value("${app.jwt.refresh-expiration}")
     private long refreshExpiration;
 
+    private static final String ISSUER = "url-shortener";
+
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         if (keyBytes.length < 32) {
@@ -45,6 +47,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .subject(email)
+                .issuer(ISSUER)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSigningKey())
@@ -57,6 +60,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .subject(email)
+                .issuer(ISSUER)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .claim("type", "refresh")
@@ -66,6 +70,7 @@ public class JwtTokenProvider {
 
     public String getEmailFromToken(String token) {
         Claims claims = Jwts.parser()
+                .requireIssuer(ISSUER)
                 .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
@@ -77,6 +82,7 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
+                    .requireIssuer(ISSUER)
                     .verifyWith(getSigningKey())
                     .build()
                     .parseSignedClaims(token);
