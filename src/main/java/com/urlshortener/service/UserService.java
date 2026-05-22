@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
+    private static final int MIN_PASSWORD_LENGTH = 8;
+
     private final UserRepository userRepository;
     private final UrlRepository urlRepository;
     private final PasswordEncoder passwordEncoder;
@@ -57,6 +59,10 @@ public class UserService {
         if (request.getNewPassword() != null && !request.getNewPassword().isBlank()) {
             if (request.getCurrentPassword() == null || request.getCurrentPassword().isBlank()) {
                 throw new BadRequestException("Current password is required to change password");
+            }
+
+            if (request.getNewPassword().length() < MIN_PASSWORD_LENGTH) {
+                throw new BadRequestException("New password must be at least " + MIN_PASSWORD_LENGTH + " characters");
             }
 
             if (!passwordEncoder.matches(request.getCurrentPassword(), fullUser.getPassword())) {
