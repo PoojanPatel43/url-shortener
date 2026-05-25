@@ -28,7 +28,7 @@ public class AnalyticsController {
 
     private final AnalyticsService analyticsService;
 
-    @GetMapping("/{shortCode}")
+    @GetMapping("/{shortCode:[A-Za-z0-9]+}")
     @Operation(summary = "Get analytics for a URL", description = "Returns detailed click analytics for a shortened URL")
     public ResponseEntity<ApiResponse<AnalyticsResponse>> getAnalytics(
             @Parameter(description = "The short code of the URL") @PathVariable String shortCode,
