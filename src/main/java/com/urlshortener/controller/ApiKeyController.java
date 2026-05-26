@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -55,7 +56,7 @@ public class ApiKeyController {
     @PatchMapping("/{keyId}/revoke")
     @Operation(summary = "Revoke an API key", description = "Disables an API key without deleting it")
     public ResponseEntity<ApiResponse<Void>> revokeApiKey(
-            @Parameter(description = "The ID of the API key") @PathVariable Long keyId,
+            @Parameter(description = "The ID of the API key") @PathVariable @Positive Long keyId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         log.info("User {} revoking API key ID: {}", userDetails.getUsername(), keyId);
@@ -67,7 +68,7 @@ public class ApiKeyController {
     @DeleteMapping("/{keyId}")
     @Operation(summary = "Delete an API key", description = "Permanently deletes an API key")
     public ResponseEntity<ApiResponse<Void>> deleteApiKey(
-            @Parameter(description = "The ID of the API key") @PathVariable Long keyId,
+            @Parameter(description = "The ID of the API key") @PathVariable @Positive Long keyId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         log.warn("User {} deleting API key ID: {}", userDetails.getUsername(), keyId);

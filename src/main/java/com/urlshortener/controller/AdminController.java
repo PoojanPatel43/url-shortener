@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.constraints.Positive;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -49,7 +50,7 @@ public class AdminController {
     @GetMapping("/users/{userId}")
     @Operation(summary = "Get user details", description = "Returns detailed information about a specific user")
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(
-            @Parameter(description = "The ID of the user") @PathVariable Long userId) {
+            @Parameter(description = "The ID of the user") @PathVariable @Positive Long userId) {
 
         log.info("Admin fetching user details for ID: {}", userId);
         UserResponse user = adminService.getUserById(userId);
@@ -59,7 +60,7 @@ public class AdminController {
     @PatchMapping("/users/{userId}/toggle-status")
     @Operation(summary = "Toggle user status", description = "Enables or disables a user account")
     public ResponseEntity<ApiResponse<Void>> toggleUserStatus(
-            @Parameter(description = "The ID of the user") @PathVariable Long userId) {
+            @Parameter(description = "The ID of the user") @PathVariable @Positive Long userId) {
 
         log.info("Admin toggling status for user ID: {}", userId);
         adminService.toggleUserStatus(userId);
@@ -70,7 +71,7 @@ public class AdminController {
     @DeleteMapping("/users/{userId}")
     @Operation(summary = "Delete a user", description = "Permanently deletes a user and all their associated data")
     public ResponseEntity<ApiResponse<Void>> deleteUser(
-            @Parameter(description = "The ID of the user") @PathVariable Long userId) {
+            @Parameter(description = "The ID of the user") @PathVariable @Positive Long userId) {
 
         log.warn("Admin deleting user ID: {}", userId);
         adminService.deleteUser(userId);
