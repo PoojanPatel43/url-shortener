@@ -17,6 +17,7 @@ public class CreateUrlRequest {
 
     @NotBlank(message = "URL is required")
     @URL(message = "Invalid URL format")
+    @Size(max = 2048, message = "URL must not exceed 2048 characters")
     private String url;
 
     @Size(min = 3, max = 20, message = "Custom alias must be between 3 and 20 characters")
