@@ -3,6 +3,7 @@ package com.urlshortener.service;
 import com.urlshortener.dto.AdminStatsResponse;
 import com.urlshortener.dto.UserResponse;
 import com.urlshortener.entity.User;
+import com.urlshortener.exception.BadRequestException;
 import com.urlshortener.exception.ResourceNotFoundException;
 import com.urlshortener.repository.ClickAnalyticsRepository;
 import com.urlshortener.repository.UrlRepository;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,6 +98,8 @@ public class AdminService {
 
     @Transactional
     public void toggleUserStatus(Long userId) {
+        preventSelfAction(userId, "disable");
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
@@ -107,11 +111,22 @@ public class AdminService {
 
     @Transactional
     public void deleteUser(Long userId) {
+        preventSelfAction(userId, "delete");
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
         long userUrls = urlRepository.countByUser(user);
         userRepository.delete(user);
         log.warn("Admin deleted user: {} (had {} URLs)", user.getEmail(), userUrls);
+    }
+
+    private void preventSelfAction(Long targetUserId, String action) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof com.urlshortener.security.CustomUserDetails userDetails) {
+            if (userDetails.toUser().getId().equals(targetUserId)) {
+                throw new BadRequestException("Cannot " + action + " your own account");
+            }
+        }
     }
 }
