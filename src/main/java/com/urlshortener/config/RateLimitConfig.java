@@ -5,6 +5,7 @@ import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -55,5 +56,14 @@ public class RateLimitConfig {
 
     public void clearBucket(String key) {
         buckets.remove(key);
+    }
+
+    @Scheduled(fixedRate = 3600000) // Run every hour
+    public void evictStaleBuckets() {
+        int size = buckets.size();
+        if (size > 1000) {
+            log.info("Evicting rate limit buckets: {} entries", size);
+            buckets.clear();
+        }
     }
 }
