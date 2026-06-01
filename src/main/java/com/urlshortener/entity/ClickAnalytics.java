@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "click_analytics", indexes = {
         @Index(name = "idx_click_analytics_clicked_at", columnList = "clicked_at"),
-        @Index(name = "idx_click_analytics_url_clicked_at", columnList = "url_id, clicked_at")
+        @Index(name = "idx_click_analytics_url_clicked_at", columnList = "url_id, clicked_at"),
+        @Index(name = "idx_click_analytics_url_ip", columnList = "url_id, ip_address")
 })
 @Data
 @Builder
