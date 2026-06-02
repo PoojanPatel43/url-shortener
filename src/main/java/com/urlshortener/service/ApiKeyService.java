@@ -123,6 +123,7 @@ public class ApiKeyService {
                 .prefix(apiKey.getPrefix())
                 .key(fullKey)  // Only set when creating
                 .enabled(apiKey.getEnabled())
+                .expired(apiKey.isExpired())
                 .lastUsedAt(apiKey.getLastUsedAt())
                 .expiresAt(apiKey.getExpiresAt())
                 .createdAt(apiKey.getCreatedAt())

@@ -20,6 +20,7 @@ public class ApiKeyResponse {
     private String prefix;
     private String key;  // Only returned on creation
     private Boolean enabled;
+    private Boolean expired;
     private LocalDateTime lastUsedAt;
     private LocalDateTime expiresAt;
     private LocalDateTime createdAt;
