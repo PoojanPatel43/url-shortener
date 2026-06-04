@@ -40,20 +40,21 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        log.debug("Registration attempt for email: {}", request.getEmail());
+        String email = request.getEmail().toLowerCase().trim();
+        log.debug("Registration attempt for email: {}", email);
 
-        if (!EMAIL_PATTERN.matcher(request.getEmail()).matches()) {
-            log.warn("Registration failed - invalid email format: {}", request.getEmail());
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            log.warn("Registration failed - invalid email format: {}", email);
             throw new BadRequestException("Invalid email format");
         }
 
-        if (userRepository.existsByEmail(request.getEmail())) {
-            log.warn("Registration failed - email already exists: {}", request.getEmail());
+        if (userRepository.existsByEmail(email)) {
+            log.warn("Registration failed - email already exists: {}", email);
             throw new BadRequestException("Email is already registered");
         }
 
         User user = User.builder()
-                .email(request.getEmail())
+                .email(email)
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
                 .build();
@@ -66,10 +67,11 @@ public class AuthService {
 
     @Transactional
     public AuthResponse login(AuthRequest request) {
-        log.debug("Login attempt for email: {}", request.getEmail());
+        String email = request.getEmail().toLowerCase().trim();
+        log.debug("Login attempt for email: {}", email);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        email,
                         request.getPassword()
                 )
         );
