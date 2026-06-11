@@ -215,7 +215,8 @@ public class UrlService {
             shortCode = base62Encoder.generateRandom(shortUrlLength);
             attempts++;
             if (attempts > MAX_SHORT_CODE_GENERATION_ATTEMPTS) {
-                throw new RuntimeException("Failed to generate unique short code after " + MAX_SHORT_CODE_GENERATION_ATTEMPTS + " attempts");
+                log.error("Short code generation failed after {} attempts", MAX_SHORT_CODE_GENERATION_ATTEMPTS);
+                throw new BadRequestException("Unable to generate a unique short code. Please try again.");
             }
         } while (urlRepository.existsByShortCode(shortCode));
         return shortCode;
