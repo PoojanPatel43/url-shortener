@@ -167,14 +167,14 @@ public class AnalyticsService {
 
         if (userAgent.contains("edg")) {
             return "Edge";
+        } else if (userAgent.contains("opera") || userAgent.contains("opr")) {
+            return "Opera";
         } else if (userAgent.contains("chrome") && !userAgent.contains("edg")) {
             return "Chrome";
         } else if (userAgent.contains("firefox")) {
             return "Firefox";
         } else if (userAgent.contains("safari") && !userAgent.contains("chrome")) {
             return "Safari";
-        } else if (userAgent.contains("opera") || userAgent.contains("opr")) {
-            return "Opera";
         } else {
             return "Other";
         }
