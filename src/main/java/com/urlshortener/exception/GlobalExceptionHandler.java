@@ -10,8 +10,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,6 +95,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.METHOD_NOT_ALLOWED)
                 .body(ApiResponse.error("HTTP method " + ex.getMethod() + " is not supported for this endpoint"));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMissingParameterException(MissingServletRequestParameterException ex) {
+        log.warn("Missing request parameter: {}", ex.getParameterName());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error("Required parameter '" + ex.getParameterName() + "' is missing"));
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<Void>> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        log.warn("Type mismatch for parameter '{}': {}", ex.getName(), ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error("Invalid value for parameter '" + ex.getName() + "'"));
     }
 
     @ExceptionHandler(Exception.class)
