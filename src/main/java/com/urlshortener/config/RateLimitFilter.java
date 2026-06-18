@@ -52,6 +52,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             long waitTimeSeconds = TimeUnit.NANOSECONDS.toSeconds(probe.getNanosToWaitForRefill());
+            response.addHeader("Retry-After", String.valueOf(waitTimeSeconds));
             response.addHeader("X-Rate-Limit-Retry-After-Seconds", String.valueOf(waitTimeSeconds));
 
             log.warn("Rate limit exceeded for client: {}", clientKey);
