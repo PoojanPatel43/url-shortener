@@ -237,6 +237,7 @@ public class UrlService {
                 .clickCount(url.getClickCount())
                 .customAlias(url.getCustomAlias())
                 .isActive(url.getIsActive())
+                .expired(url.isExpired())
                 .expiresAt(url.getExpiresAt())
                 .createdAt(url.getCreatedAt())
                 .build();

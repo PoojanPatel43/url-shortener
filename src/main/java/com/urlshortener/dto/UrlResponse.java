@@ -22,6 +22,7 @@ public class UrlResponse {
     private Long clickCount;
     private Boolean customAlias;
     private Boolean isActive;
+    private Boolean expired;
     private LocalDateTime expiresAt;
     private LocalDateTime createdAt;
 }
