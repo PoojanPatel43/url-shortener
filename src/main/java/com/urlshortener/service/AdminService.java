@@ -37,6 +37,7 @@ public class AdminService {
         LocalDateTime startOfMonth = now.minusDays(30);
 
         long totalUsers = userRepository.count();
+        long newUsersToday = userRepository.countNewUsersSince(startOfDay);
         long totalUrls = urlRepository.count();
         long activeUrls = urlRepository.countActiveUrls();
         long totalClicks = clickAnalyticsRepository.count();
@@ -49,6 +50,7 @@ public class AdminService {
 
         return AdminStatsResponse.builder()
                 .totalUsers(totalUsers)
+                .newUsersToday(newUsersToday)
                 .totalUrls(totalUrls)
                 .activeUrls(activeUrls)
                 .totalClicks(totalClicks)

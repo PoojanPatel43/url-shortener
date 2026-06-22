@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class AdminStatsResponse {
 
     private Long totalUsers;
+    private Long newUsersToday;
     private Long totalUrls;
     private Long activeUrls;
     private Long totalClicks;
