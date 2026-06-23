@@ -70,6 +70,10 @@ public class UserService {
                 throw new BadRequestException("Current password is incorrect");
             }
 
+            if (passwordEncoder.matches(request.getNewPassword(), fullUser.getPassword())) {
+                throw new BadRequestException("New password must be different from current password");
+            }
+
             fullUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
             log.info("Password updated for user: {}", fullUser.getEmail());
         }
