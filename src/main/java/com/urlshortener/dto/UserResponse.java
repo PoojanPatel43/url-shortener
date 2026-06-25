@@ -20,6 +20,7 @@ public class UserResponse {
     private String email;
     private String name;
     private String role;
+    private Boolean enabled;
     private Long totalUrls;
     private Long totalClicks;
     private LocalDateTime createdAt;
@@ -30,6 +31,7 @@ public class UserResponse {
                 .email(user.getEmail())
                 .name(user.getName())
                 .role(user.getRole().name())
+                .enabled(user.getEnabled())
                 .createdAt(user.getCreatedAt())
                 .build();
     }

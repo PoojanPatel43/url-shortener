@@ -41,6 +41,7 @@ public class UserService {
                 .email(fullUser.getEmail())
                 .name(fullUser.getName())
                 .role(fullUser.getRole().name())
+                .enabled(fullUser.getEnabled())
                 .totalUrls(totalUrls)
                 .totalClicks(totalClicks != null ? totalClicks : 0L)
                 .createdAt(fullUser.getCreatedAt())
