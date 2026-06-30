@@ -96,6 +96,12 @@ public class AuthService {
 
         User user = refreshToken.getUser();
 
+        if (!user.getEnabled()) {
+            log.warn("Disabled user attempted token refresh: {}", user.getEmail());
+            refreshTokenRepository.delete(refreshToken);
+            throw new BadRequestException("Account is disabled");
+        }
+
         // Delete old refresh token
         refreshTokenRepository.delete(refreshToken);
 
