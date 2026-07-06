@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,12 +34,12 @@ public class AnalyticsController {
     @Operation(summary = "Get analytics for a URL", description = "Returns detailed click analytics for a shortened URL")
     public ResponseEntity<ApiResponse<AnalyticsResponse>> getAnalytics(
             @Parameter(description = "The short code of the URL") @PathVariable String shortCode,
-            @Parameter(description = "Number of days to include in analytics (default: 30)")
-            @RequestParam(defaultValue = "30") int days,
+            @Parameter(description = "Number of days to include in daily click stats (1-365, default: 30)")
+            @RequestParam(defaultValue = "30") @Positive @Max(365) int days,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        log.info("User {} fetching analytics for shortCode: {}", userDetails.getUsername(), shortCode);
-        AnalyticsResponse analytics = analyticsService.getAnalytics(shortCode, userDetails.toUser());
+        log.info("User {} fetching analytics for shortCode: {} (days: {})", userDetails.getUsername(), shortCode, days);
+        AnalyticsResponse analytics = analyticsService.getAnalytics(shortCode, userDetails.toUser(), days);
         log.debug("Analytics retrieved - Total clicks: {}, Unique visitors: {}",
                 analytics.getTotalClicks(), analytics.getUniqueVisitors());
         return ResponseEntity.ok(ApiResponse.success(analytics));

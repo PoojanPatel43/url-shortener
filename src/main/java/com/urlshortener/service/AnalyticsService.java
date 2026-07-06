@@ -56,8 +56,8 @@ public class AnalyticsService {
     }
 
     @Transactional(readOnly = true)
-    public AnalyticsResponse getAnalytics(String shortCode, User user) {
-        log.debug("Fetching analytics for shortCode: {} by user: {}", shortCode, user.getEmail());
+    public AnalyticsResponse getAnalytics(String shortCode, User user, int days) {
+        log.debug("Fetching analytics for shortCode: {} by user: {} (days: {})", shortCode, user.getEmail(), days);
         Url url = urlService.getUrlByShortCode(shortCode);
         validateOwnership(url, user);
 
@@ -68,7 +68,7 @@ public class AnalyticsService {
         long clicks7d = clickAnalyticsRepository.countClicksSince(url, now.minusDays(7));
         long clicks30d = clickAnalyticsRepository.countClicksSince(url, now.minusDays(30));
 
-        List<AnalyticsResponse.DailyClicks> dailyClicks = getDailyClicks(url, 30);
+        List<AnalyticsResponse.DailyClicks> dailyClicks = getDailyClicks(url, days);
         List<AnalyticsResponse.StatEntry> topCountries = convertToStatEntries(
                 clickAnalyticsRepository.getCountryStats(url), totalClicks);
         List<AnalyticsResponse.StatEntry> topBrowsers = convertToStatEntries(
