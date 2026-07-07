@@ -6,6 +6,7 @@ import com.urlshortener.entity.User;
 import com.urlshortener.exception.BadRequestException;
 import com.urlshortener.exception.ResourceNotFoundException;
 import com.urlshortener.repository.ClickAnalyticsRepository;
+import com.urlshortener.repository.RefreshTokenRepository;
 import com.urlshortener.repository.UrlRepository;
 import com.urlshortener.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class AdminService {
     private final UserRepository userRepository;
     private final UrlRepository urlRepository;
     private final ClickAnalyticsRepository clickAnalyticsRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional(readOnly = true)
     public AdminStatsResponse getStats() {
@@ -110,6 +112,12 @@ public class AdminService {
         boolean previousStatus = user.getEnabled();
         user.setEnabled(!previousStatus);
         userRepository.save(user);
+
+        if (!user.getEnabled()) {
+            refreshTokenRepository.deleteByUser(user);
+            log.info("Revoked all refresh tokens for disabled user: {}", user.getEmail());
+        }
+
         log.info("User {} status changed: {} -> {}", user.getEmail(), previousStatus, user.getEnabled());
     }
 
