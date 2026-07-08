@@ -78,7 +78,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
         // Use JWT user if authenticated
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return "jwt:" + authHeader.substring(7, Math.min(authHeader.length(), 20));
+            String token = authHeader.substring(7);
+            return "jwt:" + Integer.toHexString(token.hashCode());
         }
 
         // Fall back to IP address
