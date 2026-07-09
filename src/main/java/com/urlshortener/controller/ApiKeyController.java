@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "API Keys", description = "API key management endpoints")
 @SecurityRequirement(name = "bearerAuth")
+@Validated
 public class ApiKeyController {
 
     private final ApiKeyService apiKeyService;
