@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ public class UrlService {
 
     private final UrlRepository urlRepository;
     private final Base62Encoder base62Encoder;
+    private final CacheManager cacheManager;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -171,7 +173,11 @@ public class UrlService {
         log.debug("Starting scheduled expired URL cleanup");
         int count = urlRepository.deactivateExpiredUrls(LocalDateTime.now());
         if (count > 0) {
-            log.info("Deactivated {} expired URLs", count);
+            var urlCache = cacheManager.getCache("urls");
+            if (urlCache != null) {
+                urlCache.clear();
+            }
+            log.info("Deactivated {} expired URLs and cleared URL cache", count);
         } else {
             log.debug("No expired URLs to deactivate");
         }
