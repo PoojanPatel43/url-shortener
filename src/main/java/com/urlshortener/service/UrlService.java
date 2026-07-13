@@ -86,7 +86,7 @@ public class UrlService {
                 .build();
 
         url = urlRepository.save(url);
-        log.info("Created short URL: {} -> {} by user: {}", shortCode, request.getUrl(),
+        log.info("Created short URL: {} (target length: {}) by user: {}", shortCode, request.getUrl().length(),
                 user != null ? user.getEmail() : "anonymous");
 
         return mapToResponse(url);
@@ -185,8 +185,8 @@ public class UrlService {
 
     private void validateUrl(String url) {
         if (!URL_VALIDATOR.isValid(url)) {
-            log.debug("Invalid URL format rejected: {}", url);
-            throw new BadRequestException("Invalid URL format: " + url);
+            log.debug("Invalid URL format rejected (length: {})", url.length());
+            throw new BadRequestException("Invalid URL format");
         }
     }
 
