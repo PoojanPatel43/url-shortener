@@ -37,8 +37,14 @@ public class ApiKeyAuthenticationService {
         return apiKeyRepository.findByKeyHash(keyHash)
                 .filter(ApiKey::getEnabled)
                 .filter(key -> !key.isExpired())
+                .filter(key -> {
+                    if (!key.getUser().getEnabled()) {
+                        log.warn("API key auth rejected for disabled user: {}", key.getUser().getEmail());
+                        return false;
+                    }
+                    return true;
+                })
                 .map(apiKey -> {
-                    // Update last used timestamp
                     apiKeyRepository.updateLastUsedAt(apiKey.getId(), LocalDateTime.now());
                     log.debug("API key authenticated: {}", apiKey.getPrefix());
                     return new CustomUserDetails(apiKey.getUser());
