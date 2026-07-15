@@ -53,10 +53,12 @@ public class AuthService {
             throw new BadRequestException("Email is already registered");
         }
 
+        String name = request.getName() != null ? request.getName().trim() : null;
+
         User user = User.builder()
                 .email(email)
                 .password(passwordEncoder.encode(request.getPassword()))
-                .name(request.getName())
+                .name(name)
                 .build();
 
         user = userRepository.save(user);

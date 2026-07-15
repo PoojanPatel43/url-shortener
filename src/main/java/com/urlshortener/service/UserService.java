@@ -54,7 +54,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (request.getName() != null && !request.getName().isBlank()) {
-            fullUser.setName(request.getName());
+            fullUser.setName(request.getName().trim());
         }
 
         if (request.getNewPassword() != null && !request.getNewPassword().isBlank()) {
