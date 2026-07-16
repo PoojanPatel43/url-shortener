@@ -59,7 +59,7 @@ public class ApiKeyService {
 
         ApiKey apiKey = ApiKey.builder()
                 .user(user)
-                .name(request.getName())
+                .name(request.getName().trim())
                 .keyHash(keyHash)
                 .prefix(API_KEY_PREFIX)
                 .expiresAt(expiresAt)
