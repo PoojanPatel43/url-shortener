@@ -81,6 +81,8 @@ public class AuthService {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userDetails.toUser();
 
+        refreshTokenRepository.deleteExpiredTokensByUser(user, LocalDateTime.now());
+
         log.info("User logged in: {}", user.getEmail());
         return createAuthResponse(user);
     }
