@@ -1,6 +1,5 @@
 package com.urlshortener.controller;
 
-import com.urlshortener.entity.Url;
 import com.urlshortener.service.AnalyticsService;
 import com.urlshortener.service.UrlService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,21 +40,16 @@ public class RedirectController {
             @Parameter(description = "The short code of the URL") @PathVariable String shortCode,
             HttpServletRequest request) {
 
-        String clientIp = getClientIpAddress(request);
-        log.info("Redirect request for short code: {} from IP: {}", shortCode, clientIp);
+        log.info("Redirect request for short code: {}", shortCode);
 
-        // Get the URL entity for analytics
-        Url url = urlService.getUrlByShortCode(shortCode);
-
-        // Get the original URL (this validates active status and expiration)
+        // Get the original URL (cached, validates active status and expiration)
         String originalUrl = urlService.getOriginalUrl(shortCode);
 
-        // Record analytics asynchronously
-        analyticsService.recordClick(url, request);
-
+        // Record analytics asynchronously — lookup happens in background thread
+        String clientIp = getClientIpAddress(request);
         String userAgent = request.getHeader("User-Agent");
-        log.debug("Redirecting {} to: {} (User-Agent: {})", shortCode, originalUrl,
-                userAgent != null ? userAgent.substring(0, Math.min(userAgent.length(), 50)) : "unknown");
+        String referer = request.getHeader("Referer");
+        analyticsService.recordClick(shortCode, clientIp, userAgent, referer);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create(originalUrl));

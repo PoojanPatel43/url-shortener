@@ -7,7 +7,6 @@ import com.urlshortener.entity.User;
 import com.urlshortener.exception.BadRequestException;
 import com.urlshortener.repository.ClickAnalyticsRepository;
 import com.urlshortener.repository.UrlRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -30,11 +29,9 @@ public class AnalyticsService {
 
     @Async
     @Transactional
-    public void recordClick(Url url, HttpServletRequest request) {
+    public void recordClick(String shortCode, String ipAddress, String userAgent, String referer) {
         try {
-            String userAgent = request.getHeader("User-Agent");
-            String referer = request.getHeader("Referer");
-            String ipAddress = getClientIpAddress(request);
+            Url url = urlService.getUrlByShortCode(shortCode);
 
             ClickAnalytics analytics = ClickAnalytics.builder()
                     .url(url)
@@ -49,9 +46,9 @@ public class AnalyticsService {
             clickAnalyticsRepository.save(analytics);
             urlService.incrementClickCount(url.getId());
 
-            log.debug("Recorded click for URL: {} from {} via {}", url.getShortCode(), ipAddress, parseBrowser(userAgent));
+            log.debug("Recorded click for URL: {} from {} via {}", shortCode, ipAddress, parseBrowser(userAgent));
         } catch (Exception e) {
-            log.error("Failed to record click analytics for URL: {}", url.getShortCode(), e);
+            log.error("Failed to record click analytics for URL: {}", shortCode, e);
         }
     }
 
@@ -124,28 +121,6 @@ public class AnalyticsService {
                             .build();
                 })
                 .collect(Collectors.toList());
-    }
-
-    private String getClientIpAddress(HttpServletRequest request) {
-        String[] headerNames = {
-                "X-Forwarded-For",
-                "X-Real-IP",
-                "Proxy-Client-IP",
-                "WL-Proxy-Client-IP",
-                "HTTP_X_FORWARDED_FOR",
-                "HTTP_X_FORWARDED",
-                "HTTP_FORWARDED_FOR",
-                "HTTP_FORWARDED",
-                "HTTP_CLIENT_IP"
-        };
-
-        for (String header : headerNames) {
-            String ip = request.getHeader(header);
-            if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
-                return ip.split(",")[0].trim();
-            }
-        }
-        return request.getRemoteAddr();
     }
 
     private String parseDeviceType(String userAgent) {
