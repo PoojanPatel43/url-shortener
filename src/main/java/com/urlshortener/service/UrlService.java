@@ -138,6 +138,10 @@ public class UrlService {
         Url url = getUrlByShortCode(shortCode);
         validateOwnership(url, user);
 
+        if (!url.getIsActive()) {
+            throw new BadRequestException("Cannot update a deactivated URL");
+        }
+
         if (request.getUrl() != null && !request.getUrl().isBlank()) {
             validateUrl(request.getUrl());
             url.setOriginalUrl(request.getUrl());
@@ -157,6 +161,11 @@ public class UrlService {
     public void deleteUrl(String shortCode, User user) {
         Url url = getUrlByShortCode(shortCode);
         validateOwnership(url, user);
+
+        if (!url.getIsActive()) {
+            throw new BadRequestException("URL is already deactivated");
+        }
+
         url.setIsActive(false);
         urlRepository.save(url);
         log.info("Deactivated URL: {}", shortCode);
