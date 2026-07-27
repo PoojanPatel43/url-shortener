@@ -25,4 +25,5 @@ public class UrlResponse {
     private Boolean expired;
     private LocalDateTime expiresAt;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

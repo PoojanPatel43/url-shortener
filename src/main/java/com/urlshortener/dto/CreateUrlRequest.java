@@ -2,6 +2,7 @@ package com.urlshortener.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class CreateUrlRequest {
     private String url;
 
     @Size(min = 3, max = 20, message = "Custom alias must be between 3 and 20 characters")
+    @Pattern(regexp = "^[A-Za-z0-9]*$", message = "Custom alias can only contain alphanumeric characters")
     private String customAlias;
 
     @Positive(message = "Expiration days must be a positive number")

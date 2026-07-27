@@ -255,6 +255,7 @@ public class UrlService {
                 .expired(url.isExpired())
                 .expiresAt(url.getExpiresAt())
                 .createdAt(url.getCreatedAt())
+                .updatedAt(url.getUpdatedAt())
                 .build();
     }
 }
