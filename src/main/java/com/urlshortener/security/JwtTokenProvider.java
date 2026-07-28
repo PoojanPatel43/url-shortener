@@ -3,6 +3,7 @@ package com.urlshortener.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -27,13 +28,16 @@ public class JwtTokenProvider {
 
     private static final String ISSUER = "url-shortener";
 
-    private SecretKey getSigningKey() {
+    private SecretKey signingKey;
+
+    @PostConstruct
+    private void init() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         if (keyBytes.length < 32) {
-            // If secret is too short, use it as a seed for a proper key
-            return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+            signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        } else {
+            signingKey = Keys.hmacShaKeyFor(keyBytes);
         }
-        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateAccessToken(Authentication authentication) {
@@ -50,7 +54,7 @@ public class JwtTokenProvider {
                 .issuer(ISSUER)
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(getSigningKey())
+                .signWith(signingKey)
                 .compact();
     }
 
@@ -64,14 +68,14 @@ public class JwtTokenProvider {
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .claim("type", "refresh")
-                .signWith(getSigningKey())
+                .signWith(signingKey)
                 .compact();
     }
 
     public String getEmailFromToken(String token) {
         Claims claims = Jwts.parser()
                 .requireIssuer(ISSUER)
-                .verifyWith(getSigningKey())
+                .verifyWith(signingKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
@@ -83,7 +87,7 @@ public class JwtTokenProvider {
         try {
             Jwts.parser()
                     .requireIssuer(ISSUER)
-                    .verifyWith(getSigningKey())
+                    .verifyWith(signingKey)
                     .build()
                     .parseSignedClaims(token);
             return true;
