@@ -40,21 +40,25 @@ public class AdminService {
 
         long totalUsers = userRepository.count();
         long newUsersToday = userRepository.countNewUsersSince(startOfDay);
+        long disabledUsers = userRepository.countDisabledUsers();
         long totalUrls = urlRepository.count();
         long activeUrls = urlRepository.countActiveUrls();
+        long urlsCreatedToday = urlRepository.countUrlsCreatedSince(startOfDay);
         long totalClicks = clickAnalyticsRepository.count();
         long clicksToday = clickAnalyticsRepository.countClicksSinceDate(startOfDay);
         long clicksThisWeek = clickAnalyticsRepository.countClicksSinceDate(startOfWeek);
         long clicksThisMonth = clickAnalyticsRepository.countClicksSinceDate(startOfMonth);
 
-        log.info("Platform stats - Users: {}, URLs: {}, Active URLs: {}, Total clicks: {}",
-                totalUsers, totalUrls, activeUrls, totalClicks);
+        log.info("Platform stats - Users: {} ({} disabled), URLs: {} ({} active), Total clicks: {}",
+                totalUsers, disabledUsers, totalUrls, activeUrls, totalClicks);
 
         return AdminStatsResponse.builder()
                 .totalUsers(totalUsers)
                 .newUsersToday(newUsersToday)
+                .disabledUsers(disabledUsers)
                 .totalUrls(totalUrls)
                 .activeUrls(activeUrls)
+                .urlsCreatedToday(urlsCreatedToday)
                 .totalClicks(totalClicks)
                 .clicksToday(clicksToday)
                 .clicksThisWeek(clicksThisWeek)

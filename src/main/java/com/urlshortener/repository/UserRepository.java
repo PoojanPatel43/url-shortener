@@ -18,4 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT COUNT(u) FROM User u WHERE u.createdAt >= :since")
     long countNewUsersSince(@Param("since") LocalDateTime since);
+
+    @Query("SELECT COUNT(u) FROM User u WHERE u.enabled = false")
+    long countDisabledUsers();
 }

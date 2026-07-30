@@ -47,4 +47,7 @@ public interface UrlRepository extends JpaRepository<Url, Long> {
 
     @Query("SELECT COUNT(u) FROM Url u WHERE u.user = :user AND u.isActive = true")
     long countActiveUrlsByUser(@Param("user") User user);
+
+    @Query("SELECT COUNT(u) FROM Url u WHERE u.createdAt >= :since")
+    long countUrlsCreatedSince(@Param("since") LocalDateTime since);
 }
