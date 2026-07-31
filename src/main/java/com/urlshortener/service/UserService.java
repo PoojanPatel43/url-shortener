@@ -5,6 +5,7 @@ import com.urlshortener.dto.UserResponse;
 import com.urlshortener.entity.User;
 import com.urlshortener.exception.BadRequestException;
 import com.urlshortener.exception.ResourceNotFoundException;
+import com.urlshortener.repository.RefreshTokenRepository;
 import com.urlshortener.repository.UrlRepository;
 import com.urlshortener.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UrlRepository urlRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
@@ -76,7 +78,8 @@ public class UserService {
             }
 
             fullUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
-            log.info("Password updated for user: {}", fullUser.getEmail());
+            refreshTokenRepository.deleteByUser(fullUser);
+            log.info("Password updated and refresh tokens revoked for user: {}", fullUser.getEmail());
         }
 
         userRepository.save(fullUser);
