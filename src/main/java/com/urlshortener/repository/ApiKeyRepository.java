@@ -28,4 +28,8 @@ public interface ApiKeyRepository extends JpaRepository<ApiKey, Long> {
     void updateLastUsedAt(@Param("id") Long id, @Param("now") LocalDateTime now);
 
     long countByUser(User user);
+
+    @Modifying
+    @Query("DELETE FROM ApiKey a WHERE a.expiresAt IS NOT NULL AND a.expiresAt < :now")
+    int deleteExpiredKeys(@Param("now") LocalDateTime now);
 }

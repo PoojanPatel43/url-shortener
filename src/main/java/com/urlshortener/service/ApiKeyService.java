@@ -10,6 +10,7 @@ import com.urlshortener.repository.ApiKeyRepository;
 import com.urlshortener.security.ApiKeyAuthenticationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,6 +109,18 @@ public class ApiKeyService {
 
         apiKeyRepository.delete(apiKey);
         log.info("Deleted API key '{}' for user: {}", apiKey.getName(), user.getEmail());
+    }
+
+    @Scheduled(cron = "0 30 2 * * *")
+    @Transactional
+    public void cleanupExpiredApiKeys() {
+        log.debug("Starting scheduled expired API key cleanup");
+        int deleted = apiKeyRepository.deleteExpiredKeys(LocalDateTime.now());
+        if (deleted > 0) {
+            log.info("Cleaned up {} expired API keys", deleted);
+        } else {
+            log.debug("No expired API keys to clean up");
+        }
     }
 
     private String generateApiKey() {
