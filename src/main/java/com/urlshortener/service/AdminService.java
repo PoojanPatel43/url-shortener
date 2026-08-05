@@ -113,6 +113,8 @@ public class AdminService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
+        preventAdminTargeting(user, "disable");
+
         boolean previousStatus = user.getEnabled();
         user.setEnabled(!previousStatus);
         userRepository.save(user);
@@ -132,9 +134,18 @@ public class AdminService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
+        preventAdminTargeting(user, "delete");
+
         long userUrls = urlRepository.countByUser(user);
         userRepository.delete(user);
         log.warn("Admin deleted user: {} (had {} URLs)", user.getEmail(), userUrls);
+    }
+
+    private void preventAdminTargeting(User target, String action) {
+        if (target.getRole() == User.Role.ADMIN) {
+            log.warn("Blocked attempt to {} admin account: {}", action, target.getEmail());
+            throw new BadRequestException("Cannot " + action + " an admin account");
+        }
     }
 
     private void preventSelfAction(Long targetUserId, String action) {
