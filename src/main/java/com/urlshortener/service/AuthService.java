@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -34,6 +35,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
+
+    private static final int MAX_REFRESH_TOKENS_PER_USER = 5;
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
@@ -143,6 +146,14 @@ public class AuthService {
     }
 
     private String createRefreshToken(User user) {
+        long tokenCount = refreshTokenRepository.countByUser(user);
+        if (tokenCount >= MAX_REFRESH_TOKENS_PER_USER) {
+            List<RefreshToken> tokens = refreshTokenRepository.findByUserOrderByCreatedAtAsc(user);
+            long excess = tokenCount - MAX_REFRESH_TOKENS_PER_USER + 1;
+            refreshTokenRepository.deleteAll(tokens.subList(0, (int) excess));
+            log.debug("Evicted {} oldest refresh tokens for user: {}", excess, user.getEmail());
+        }
+
         String tokenValue = UUID.randomUUID().toString();
 
         RefreshToken refreshToken = RefreshToken.builder()
