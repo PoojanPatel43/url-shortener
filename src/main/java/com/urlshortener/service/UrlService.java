@@ -197,6 +197,13 @@ public class UrlService {
             log.debug("Invalid URL format rejected (length: {})", url.length());
             throw new BadRequestException("Invalid URL format");
         }
+
+        String normalizedUrl = url.toLowerCase();
+        String normalizedBaseUrl = baseUrl.toLowerCase();
+        if (normalizedUrl.startsWith(normalizedBaseUrl)) {
+            log.warn("Redirect loop attempt blocked (target starts with base URL)");
+            throw new BadRequestException("Cannot shorten URLs that point to this service");
+        }
     }
 
     private String validateAndGetCustomAlias(String alias) {
