@@ -23,6 +23,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AnalyticsService {
 
+    private static final int MAX_USER_AGENT_LENGTH = 512;
+    private static final int MAX_REFERER_LENGTH = 2048;
+    private static final int MAX_IP_LENGTH = 45;
+
     private final ClickAnalyticsRepository clickAnalyticsRepository;
     private final UrlRepository urlRepository;
     private final UrlService urlService;
@@ -35,9 +39,9 @@ public class AnalyticsService {
 
             ClickAnalytics analytics = ClickAnalytics.builder()
                     .url(url)
-                    .ipAddress(ipAddress)
-                    .userAgent(userAgent)
-                    .referer(referer)
+                    .ipAddress(truncate(ipAddress, MAX_IP_LENGTH))
+                    .userAgent(truncate(userAgent, MAX_USER_AGENT_LENGTH))
+                    .referer(truncate(referer, MAX_REFERER_LENGTH))
                     .deviceType(parseDeviceType(userAgent))
                     .browser(parseBrowser(userAgent))
                     .os(parseOperatingSystem(userAgent))
@@ -172,6 +176,13 @@ public class AnalyticsService {
         } else {
             return "Other";
         }
+    }
+
+    private String truncate(String value, int maxLength) {
+        if (value == null || value.length() <= maxLength) {
+            return value;
+        }
+        return value.substring(0, maxLength);
     }
 
     private void validateOwnership(Url url, User user) {
