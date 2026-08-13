@@ -10,6 +10,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -62,6 +63,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (DisabledException ex) {
             log.debug("Disabled account token used: {}", ex.getMessage());
+        } catch (UsernameNotFoundException ex) {
+            log.debug("Token used for non-existent user: {}", ex.getMessage());
         } catch (Exception ex) {
             log.error("Could not set user authentication in security context", ex);
         }
