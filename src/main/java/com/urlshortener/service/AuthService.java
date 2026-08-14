@@ -121,7 +121,7 @@ public class AuthService {
         RefreshToken token = refreshTokenRepository.findByToken(refreshTokenValue).orElse(null);
         if (token != null) {
             log.info("User logged out: {}", token.getUser().getEmail());
-            refreshTokenRepository.deleteByToken(refreshTokenValue);
+            refreshTokenRepository.delete(token);
         } else {
             log.debug("Logout attempted with invalid token");
         }
