@@ -67,8 +67,4 @@ public class Url {
     public boolean isExpired() {
         return expiresAt != null && LocalDateTime.now().isAfter(expiresAt);
     }
-
-    public void incrementClickCount() {
-        this.clickCount++;
-    }
 }
