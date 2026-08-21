@@ -18,12 +18,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    defer-datasource-initialization: true
     show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
 
   flyway:
     enabled: true
@@ -41,7 +39,7 @@ server:
 
 # Application specific configuration
 app:
-  base-url: ${BASE_URL:http://localhost:8080}
+  base-url: ${BASE_URL:http://localhost:8080/api/r}
   short-url-length: 7
   max-urls-per-user: ${MAX_URLS_PER_USER:100}
 
@@ -67,7 +65,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus
+        include: health,info,metrics
   endpoint:
     health:
       show-details: when_authorized
