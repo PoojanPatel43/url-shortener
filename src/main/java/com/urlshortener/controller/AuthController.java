@@ -6,12 +6,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -23,9 +21,7 @@ public class AuthController {
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
     public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {
-        log.info("Registration attempt for email: {}", request.getEmail());
         AuthResponse response = authService.register(request);
-        log.info("Registration successful for email: {}", request.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Registration successful", response));
     }
@@ -33,25 +29,20 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "Login with email and password")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody AuthRequest request) {
-        log.info("Login attempt for email: {}", request.getEmail());
         AuthResponse response = authService.login(request);
-        log.info("Login successful for email: {}", request.getEmail());
         return ResponseEntity.ok(ApiResponse.success("Login successful", response));
     }
 
     @PostMapping("/refresh")
     @Operation(summary = "Refresh access token using refresh token")
     public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
-        log.debug("Token refresh request received");
         AuthResponse response = authService.refreshToken(request.getRefreshToken());
-        log.info("Token refresh successful for user: {}", response.getUser().getEmail());
         return ResponseEntity.ok(ApiResponse.success("Token refreshed", response));
     }
 
     @PostMapping("/logout")
     @Operation(summary = "Logout and invalidate refresh token")
     public ResponseEntity<ApiResponse<Void>> logout(@Valid @RequestBody RefreshTokenRequest request) {
-        log.debug("Logout request received");
         authService.logout(request.getRefreshToken());
         return ResponseEntity.ok(ApiResponse.success("Logged out successfully", null));
     }
