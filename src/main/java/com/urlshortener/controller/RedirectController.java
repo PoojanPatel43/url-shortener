@@ -40,9 +40,8 @@ public class RedirectController {
             @Parameter(description = "The short code of the URL") @PathVariable String shortCode,
             HttpServletRequest request) {
 
-        log.info("Redirect request for short code: {}", shortCode);
+        log.debug("Redirect request for short code: {}", shortCode);
 
-        // Get the original URL (cached, validates active status and expiration)
         String originalUrl = urlService.getOriginalUrl(shortCode);
 
         // Record analytics asynchronously — lookup happens in background thread

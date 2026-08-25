@@ -37,11 +37,7 @@ public class UrlController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         User user = userDetails != null ? userDetails.toUser() : null;
-        log.info("Creating short URL (length: {}) by user: {}", request.getUrl().length(),
-                user != null ? user.getEmail() : "anonymous");
         UrlResponse response = urlService.createShortUrl(request, user);
-        log.info("Short URL created: {}", response.getShortCode());
-
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("URL shortened successfully", response));
     }
