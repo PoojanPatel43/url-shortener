@@ -54,16 +54,12 @@ public class RateLimitConfig {
         return enabled;
     }
 
-    public void clearBucket(String key) {
-        buckets.remove(key);
-    }
-
-    @Scheduled(fixedRate = 3600000) // Run every hour
+    @Scheduled(fixedRate = 3600000)
     public void evictStaleBuckets() {
         int size = buckets.size();
-        if (size > 1000) {
-            log.info("Evicting rate limit buckets: {} entries", size);
+        if (size > 0) {
             buckets.clear();
+            log.debug("Evicted {} rate limit buckets", size);
         }
     }
 }
