@@ -2,6 +2,7 @@ package com.urlshortener.controller;
 
 import com.urlshortener.dto.ApiResponse;
 import com.urlshortener.dto.CreateUrlRequest;
+import com.urlshortener.dto.UpdateUrlRequest;
 import com.urlshortener.dto.UrlResponse;
 import com.urlshortener.entity.User;
 import com.urlshortener.security.CustomUserDetails;
@@ -66,10 +67,8 @@ public class UrlController {
     @Operation(summary = "Update a URL", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ApiResponse<UrlResponse>> updateUrl(
             @Parameter(description = "The short code of the URL") @PathVariable String shortCode,
-            @Valid @RequestBody CreateUrlRequest request,
+            @Valid @RequestBody UpdateUrlRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-
-        log.info("User {} updating URL: {}", userDetails.getUsername(), shortCode);
         UrlResponse response = urlService.updateUrl(shortCode, request, userDetails.toUser());
         return ResponseEntity.ok(ApiResponse.success("URL updated successfully", response));
     }

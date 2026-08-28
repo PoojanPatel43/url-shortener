@@ -1,6 +1,7 @@
 package com.urlshortener.service;
 
 import com.urlshortener.dto.CreateUrlRequest;
+import com.urlshortener.dto.UpdateUrlRequest;
 import com.urlshortener.dto.UrlResponse;
 import com.urlshortener.entity.Url;
 import com.urlshortener.entity.User;
@@ -134,7 +135,7 @@ public class UrlService {
 
     @CacheEvict(value = "urls", key = "#shortCode")
     @Transactional
-    public UrlResponse updateUrl(String shortCode, CreateUrlRequest request, User user) {
+    public UrlResponse updateUrl(String shortCode, UpdateUrlRequest request, User user) {
         Url url = getUrlByShortCode(shortCode);
         validateOwnership(url, user);
 
