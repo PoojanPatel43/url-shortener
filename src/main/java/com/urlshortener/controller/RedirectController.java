@@ -2,6 +2,7 @@ package com.urlshortener.controller;
 
 import com.urlshortener.service.AnalyticsService;
 import com.urlshortener.service.UrlService;
+import com.urlshortener.util.ClientIpUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -45,7 +46,7 @@ public class RedirectController {
         String originalUrl = urlService.getOriginalUrl(shortCode);
 
         // Record analytics asynchronously — lookup happens in background thread
-        String clientIp = getClientIpAddress(request);
+        String clientIp = ClientIpUtils.getClientIp(request);
         String userAgent = request.getHeader("User-Agent");
         String referer = request.getHeader("Referer");
         analyticsService.recordClick(shortCode, clientIp, userAgent, referer);
@@ -57,21 +58,5 @@ public class RedirectController {
         headers.setExpires(0);
 
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
-    }
-
-    private String getClientIpAddress(HttpServletRequest request) {
-        String[] headerNames = {
-                "X-Forwarded-For",
-                "X-Real-IP",
-                "Proxy-Client-IP"
-        };
-
-        for (String header : headerNames) {
-            String ip = request.getHeader(header);
-            if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
-                return ip.split(",")[0].trim();
-            }
-        }
-        return request.getRemoteAddr();
     }
 }

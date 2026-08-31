@@ -2,6 +2,7 @@ package com.urlshortener.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.urlshortener.dto.ApiResponse;
+import com.urlshortener.util.ClientIpUtils;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.ConsumptionProbe;
 import jakarta.servlet.FilterChain;
@@ -82,20 +83,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
             return "jwt:" + Integer.toHexString(token.hashCode());
         }
 
-        // Fall back to IP address
-        return "ip:" + getClientIp(request);
-    }
-
-    private String getClientIp(HttpServletRequest request) {
-        String[] headerNames = {"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP"};
-
-        for (String header : headerNames) {
-            String ip = request.getHeader(header);
-            if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
-                return ip.split(",")[0].trim();
-            }
-        }
-        return request.getRemoteAddr();
+        return "ip:" + ClientIpUtils.getClientIp(request);
     }
 
     @Override
