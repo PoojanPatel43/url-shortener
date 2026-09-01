@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .contentTypeOptions(contentTypeOptions -> {})
                         .frameOptions(frameOptions -> frameOptions.deny())
                         .xssProtection(xss -> xss.headerValue(
-                                org.springframework.security.web.header.writers.XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
+                                org.springframework.security.web.header.writers.XXssProtectionHeaderWriter.HeaderValue.DISABLED))
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
