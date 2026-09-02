@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -38,18 +37,10 @@ public class AuthService {
 
     private static final int MAX_REFRESH_TOKENS_PER_USER = 5;
 
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
-
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         String email = request.getEmail().toLowerCase().trim();
         log.debug("Registration attempt for email: {}", email);
-
-        if (!EMAIL_PATTERN.matcher(email).matches()) {
-            log.warn("Registration failed - invalid email format: {}", email);
-            throw new BadRequestException("Invalid email format");
-        }
 
         if (userRepository.existsByEmail(email)) {
             log.warn("Registration failed - email already exists: {}", email);
