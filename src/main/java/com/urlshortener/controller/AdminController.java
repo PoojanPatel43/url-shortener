@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.data.domain.Page;
@@ -19,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
@@ -34,7 +32,6 @@ public class AdminController {
     @GetMapping("/stats")
     @Operation(summary = "Get platform statistics", description = "Returns overall platform statistics including users, URLs, and clicks")
     public ResponseEntity<ApiResponse<AdminStatsResponse>> getStats() {
-        log.info("Fetching platform statistics");
         AdminStatsResponse stats = adminService.getStats();
         return ResponseEntity.ok(ApiResponse.success(stats));
     }
@@ -44,7 +41,6 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Page<UserResponse>>> getAllUsers(
             @PageableDefault(size = 20) Pageable pageable) {
 
-        log.info("Admin fetching all users - page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
         Page<UserResponse> users = adminService.getAllUsers(pageable);
         return ResponseEntity.ok(ApiResponse.success(users));
     }
@@ -54,7 +50,6 @@ public class AdminController {
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(
             @Parameter(description = "The ID of the user") @PathVariable @Positive Long userId) {
 
-        log.info("Admin fetching user details for ID: {}", userId);
         UserResponse user = adminService.getUserById(userId);
         return ResponseEntity.ok(ApiResponse.success(user));
     }
@@ -64,9 +59,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Void>> toggleUserStatus(
             @Parameter(description = "The ID of the user") @PathVariable @Positive Long userId) {
 
-        log.info("Admin toggling status for user ID: {}", userId);
         adminService.toggleUserStatus(userId);
-        log.info("User status toggled successfully for ID: {}", userId);
         return ResponseEntity.ok(ApiResponse.success("User status toggled successfully", null));
     }
 
@@ -75,9 +68,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Void>> deleteUser(
             @Parameter(description = "The ID of the user") @PathVariable @Positive Long userId) {
 
-        log.warn("Admin deleting user ID: {}", userId);
         adminService.deleteUser(userId);
-        log.info("User deleted successfully: {}", userId);
         return ResponseEntity.ok(ApiResponse.success("User deleted successfully", null));
     }
 }
