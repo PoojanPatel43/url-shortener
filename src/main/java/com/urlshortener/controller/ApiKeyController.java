@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("/api-keys")
 @RequiredArgsConstructor
@@ -38,9 +36,7 @@ public class ApiKeyController {
             @Valid @RequestBody ApiKeyRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        log.info("Creating API key: {}", request.getName());
         ApiKeyResponse response = apiKeyService.createApiKey(request, userDetails.toUser());
-        log.info("API key created successfully");
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("API key created successfully. Save this key - it won't be shown again!", response));
     }
@@ -50,7 +46,6 @@ public class ApiKeyController {
     public ResponseEntity<ApiResponse<List<ApiKeyResponse>>> listApiKeys(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        log.debug("User {} listing API keys", userDetails.getUsername());
         List<ApiKeyResponse> keys = apiKeyService.getUserApiKeys(userDetails.toUser());
         return ResponseEntity.ok(ApiResponse.success(keys));
     }
@@ -61,9 +56,7 @@ public class ApiKeyController {
             @Parameter(description = "The ID of the API key") @PathVariable @Positive Long keyId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        log.info("User {} revoking API key ID: {}", userDetails.getUsername(), keyId);
         apiKeyService.revokeApiKey(keyId, userDetails.toUser());
-        log.info("API key revoked successfully: {}", keyId);
         return ResponseEntity.ok(ApiResponse.success("API key revoked successfully", null));
     }
 
@@ -73,9 +66,7 @@ public class ApiKeyController {
             @Parameter(description = "The ID of the API key") @PathVariable @Positive Long keyId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        log.warn("User {} deleting API key ID: {}", userDetails.getUsername(), keyId);
         apiKeyService.deleteApiKey(keyId, userDetails.toUser());
-        log.info("API key deleted successfully: {}", keyId);
         return ResponseEntity.ok(ApiResponse.success("API key deleted successfully", null));
     }
 }
