@@ -52,6 +52,8 @@ public class SecurityConfig {
                                 org.springframework.security.web.header.writers.XXssProtectionHeaderWriter.HeaderValue.DISABLED))
                         .referrerPolicy(referrer -> referrer.policy(
                                 ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                        .permissionsPolicy(permissions -> permissions.policy(
+                                "camera=(), microphone=(), geolocation=(), payment=()"))
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
