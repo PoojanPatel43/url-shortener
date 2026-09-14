@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Slf4j
 @Service
@@ -108,7 +108,7 @@ public class AnalyticsService {
                         .date(row[0].toString())
                         .clicks((Long) row[1])
                         .build())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<AnalyticsResponse.StatEntry> convertToStatEntries(List<Object[]> stats, long totalClicks) {
@@ -124,7 +124,7 @@ public class AnalyticsService {
                             .percentage(Math.round(percentage * 100.0) / 100.0)
                             .build();
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private String parseDeviceType(String userAgent) {

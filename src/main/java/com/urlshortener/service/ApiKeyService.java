@@ -18,7 +18,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Slf4j
 @Service
@@ -79,7 +79,7 @@ public class ApiKeyService {
         List<ApiKeyResponse> keys = apiKeyRepository.findByUserOrderByCreatedAtDesc(user)
                 .stream()
                 .map(key -> mapToResponse(key, null))
-                .collect(Collectors.toList());
+                .toList();
         log.debug("Found {} API keys for user: {}", keys.size(), user.getEmail());
         return keys;
     }
