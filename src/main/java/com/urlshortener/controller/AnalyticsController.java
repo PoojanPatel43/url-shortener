@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.validation.annotation.Validated;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RestController
 @RequestMapping("/analytics")
 @RequiredArgsConstructor
@@ -40,10 +39,7 @@ public class AnalyticsController {
             @RequestParam(defaultValue = "30") @Positive @Max(365) int days,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        log.info("User {} fetching analytics for shortCode: {} (days: {})", userDetails.getUsername(), shortCode, days);
         AnalyticsResponse analytics = analyticsService.getAnalytics(shortCode, userDetails.toUser(), days);
-        log.debug("Analytics retrieved - Total clicks: {}, Unique visitors: {}",
-                analytics.getTotalClicks(), analytics.getUniqueVisitors());
         return ResponseEntity.ok(ApiResponse.success(analytics));
     }
 }
