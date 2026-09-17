@@ -6,8 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -40,11 +39,6 @@ public class JwtTokenProvider {
         }
     }
 
-    public String generateAccessToken(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return generateAccessToken(userDetails.getUsername());
-    }
-
     public String generateAccessToken(String email) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
@@ -54,20 +48,6 @@ public class JwtTokenProvider {
                 .issuer(ISSUER)
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(signingKey)
-                .compact();
-    }
-
-    public String generateRefreshToken(String email) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + refreshExpiration);
-
-        return Jwts.builder()
-                .subject(email)
-                .issuer(ISSUER)
-                .issuedAt(now)
-                .expiration(expiryDate)
-                .claim("type", "refresh")
                 .signWith(signingKey)
                 .compact();
     }
