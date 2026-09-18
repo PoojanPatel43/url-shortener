@@ -69,21 +69,7 @@ public class AdminService {
     @Transactional(readOnly = true)
     public Page<UserResponse> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable)
-                .map(user -> {
-                    Long totalUrls = urlRepository.countByUser(user);
-                    Long totalClicks = urlRepository.getTotalClicksByUser(user);
-
-                    return UserResponse.builder()
-                            .id(user.getId())
-                            .email(user.getEmail())
-                            .name(user.getName())
-                            .role(user.getRole().name())
-                            .enabled(user.getEnabled())
-                            .totalUrls(totalUrls)
-                            .totalClicks(totalClicks != null ? totalClicks : 0L)
-                            .createdAt(user.getCreatedAt())
-                            .build();
-                });
+                .map(this::mapToUserResponse);
     }
 
     @Transactional(readOnly = true)
@@ -91,19 +77,7 @@ public class AdminService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        Long totalUrls = urlRepository.countByUser(user);
-        Long totalClicks = urlRepository.getTotalClicksByUser(user);
-
-        return UserResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .name(user.getName())
-                .role(user.getRole().name())
-                .enabled(user.getEnabled())
-                .totalUrls(totalUrls)
-                .totalClicks(totalClicks != null ? totalClicks : 0L)
-                .createdAt(user.getCreatedAt())
-                .build();
+        return mapToUserResponse(user);
     }
 
     @Transactional
@@ -139,6 +113,22 @@ public class AdminService {
         long userUrls = urlRepository.countByUser(user);
         userRepository.delete(user);
         log.warn("Admin deleted user: {} (had {} URLs)", user.getEmail(), userUrls);
+    }
+
+    private UserResponse mapToUserResponse(User user) {
+        Long totalUrls = urlRepository.countByUser(user);
+        Long totalClicks = urlRepository.getTotalClicksByUser(user);
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().name())
+                .enabled(user.getEnabled())
+                .totalUrls(totalUrls)
+                .totalClicks(totalClicks != null ? totalClicks : 0L)
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 
     private void preventAdminTargeting(User target, String action) {
