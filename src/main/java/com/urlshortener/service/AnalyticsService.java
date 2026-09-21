@@ -6,7 +6,7 @@ import com.urlshortener.entity.Url;
 import com.urlshortener.entity.User;
 import com.urlshortener.exception.BadRequestException;
 import com.urlshortener.repository.ClickAnalyticsRepository;
-import com.urlshortener.repository.UrlRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.List;
 
 
@@ -28,7 +28,6 @@ public class AnalyticsService {
     private static final int MAX_IP_LENGTH = 45;
 
     private final ClickAnalyticsRepository clickAnalyticsRepository;
-    private final UrlRepository urlRepository;
     private final UrlService urlService;
 
     @Async
