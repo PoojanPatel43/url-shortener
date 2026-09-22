@@ -54,7 +54,7 @@ public class RateLimitConfig {
         return enabled;
     }
 
-    @Scheduled(fixedRate = 3600000)
+    @Scheduled(fixedRateString = "${app.scheduler.rate-limit-eviction-ms:3600000}")
     public void evictStaleBuckets() {
         int size = buckets.size();
         if (size > 0) {

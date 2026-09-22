@@ -177,7 +177,7 @@ public class UrlService {
         urlRepository.incrementClickCount(urlId);
     }
 
-    @Scheduled(cron = "0 0 * * * *") // Run every hour
+    @Scheduled(cron = "${app.scheduler.url-expiry-cron:0 0 * * * *}")
     @Transactional
     public void deactivateExpiredUrls() {
         log.debug("Starting scheduled expired URL cleanup");

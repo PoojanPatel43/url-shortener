@@ -60,6 +60,12 @@ app:
     max-custom-alias-length: 20
     default-expiration-days: 365
 
+  scheduler:
+    url-expiry-cron: "0 0 * * * *"           # Deactivate expired URLs — every hour
+    token-cleanup-cron: "0 0 2 * * *"        # Clean up expired refresh tokens — 2 AM daily
+    api-key-cleanup-cron: "0 30 2 * * *"     # Clean up expired API keys — 2:30 AM daily
+    rate-limit-eviction-ms: 3600000           # Evict stale rate limit buckets — every hour
+
 # Actuator endpoints
 management:
   endpoints:

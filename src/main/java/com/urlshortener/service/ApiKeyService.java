@@ -111,7 +111,7 @@ public class ApiKeyService {
         log.info("Deleted API key '{}' for user: {}", apiKey.getName(), user.getEmail());
     }
 
-    @Scheduled(cron = "0 30 2 * * *")
+    @Scheduled(cron = "${app.scheduler.api-key-cleanup-cron:0 30 2 * * *}")
     @Transactional
     public void cleanupExpiredApiKeys() {
         log.debug("Starting scheduled expired API key cleanup");

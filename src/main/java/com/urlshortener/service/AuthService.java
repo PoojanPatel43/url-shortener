@@ -157,7 +157,7 @@ public class AuthService {
         return tokenValue;
     }
 
-    @Scheduled(cron = "0 0 2 * * *") // Run at 2 AM daily
+    @Scheduled(cron = "${app.scheduler.token-cleanup-cron:0 0 2 * * *}")
     @Transactional
     public void cleanupExpiredRefreshTokens() {
         log.debug("Starting scheduled refresh token cleanup");
