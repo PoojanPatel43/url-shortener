@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,11 +21,6 @@ public interface UrlRepository extends JpaRepository<Url, Long> {
     boolean existsByShortCode(String shortCode);
 
     Page<Url> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
-
-    List<Url> findByUserAndIsActiveTrue(User user);
-
-    @Query("SELECT u FROM Url u WHERE u.expiresAt IS NOT NULL AND u.expiresAt < :now AND u.isActive = true")
-    List<Url> findExpiredUrls(@Param("now") LocalDateTime now);
 
     @Modifying
     @Query("UPDATE Url u SET u.isActive = false WHERE u.expiresAt IS NOT NULL AND u.expiresAt < :now AND u.isActive = true")
@@ -44,9 +38,6 @@ public interface UrlRepository extends JpaRepository<Url, Long> {
 
     @Query("SELECT COUNT(u) FROM Url u WHERE u.isActive = true")
     long countActiveUrls();
-
-    @Query("SELECT COUNT(u) FROM Url u WHERE u.user = :user AND u.isActive = true")
-    long countActiveUrlsByUser(@Param("user") User user);
 
     @Query("SELECT COUNT(u) FROM Url u WHERE u.createdAt >= :since")
     long countUrlsCreatedSince(@Param("since") LocalDateTime since);
