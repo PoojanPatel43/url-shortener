@@ -35,6 +35,7 @@ public class AnalyticsService {
     public void recordClick(String shortCode, String ipAddress, String userAgent, String referer) {
         try {
             Url url = urlService.getUrlByShortCode(shortCode);
+            String browser = parseBrowser(userAgent);
 
             ClickAnalytics analytics = ClickAnalytics.builder()
                     .url(url)
@@ -42,14 +43,14 @@ public class AnalyticsService {
                     .userAgent(truncate(userAgent, MAX_USER_AGENT_LENGTH))
                     .referer(truncate(referer, MAX_REFERER_LENGTH))
                     .deviceType(parseDeviceType(userAgent))
-                    .browser(parseBrowser(userAgent))
+                    .browser(browser)
                     .os(parseOperatingSystem(userAgent))
                     .build();
 
             clickAnalyticsRepository.save(analytics);
             urlService.incrementClickCount(url.getId());
 
-            log.debug("Recorded click for URL: {} from {} via {}", shortCode, ipAddress, parseBrowser(userAgent));
+            log.debug("Recorded click for URL: {} from {} via {}", shortCode, ipAddress, browser);
         } catch (Exception e) {
             log.error("Failed to record click analytics for URL: {}", shortCode, e);
         }
