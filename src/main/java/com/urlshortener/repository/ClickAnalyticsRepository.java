@@ -2,8 +2,6 @@ package com.urlshortener.repository;
 
 import com.urlshortener.entity.ClickAnalytics;
 import com.urlshortener.entity.Url;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,10 +12,6 @@ import java.util.List;
 
 @Repository
 public interface ClickAnalyticsRepository extends JpaRepository<ClickAnalytics, Long> {
-
-    Page<ClickAnalytics> findByUrlOrderByClickedAtDesc(Url url, Pageable pageable);
-
-    List<ClickAnalytics> findByUrlAndClickedAtBetween(Url url, LocalDateTime start, LocalDateTime end);
 
     @Query("SELECT c.country, COUNT(c) FROM ClickAnalytics c WHERE c.url = :url GROUP BY c.country ORDER BY COUNT(c) DESC")
     List<Object[]> getCountryStats(@Param("url") Url url);
@@ -36,8 +30,6 @@ public interface ClickAnalyticsRepository extends JpaRepository<ClickAnalytics, 
 
     @Query("SELECT CAST(c.clickedAt AS date), COUNT(c) FROM ClickAnalytics c WHERE c.url = :url AND c.clickedAt >= :startDate GROUP BY CAST(c.clickedAt AS date) ORDER BY CAST(c.clickedAt AS date)")
     List<Object[]> getDailyClickStats(@Param("url") Url url, @Param("startDate") LocalDateTime startDate);
-
-    long countByUrl(Url url);
 
     @Query("SELECT COUNT(c) FROM ClickAnalytics c WHERE c.url = :url AND c.clickedAt >= :startDate")
     long countClicksSince(@Param("url") Url url, @Param("startDate") LocalDateTime startDate);

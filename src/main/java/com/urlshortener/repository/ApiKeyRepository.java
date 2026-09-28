@@ -19,10 +19,6 @@ public interface ApiKeyRepository extends JpaRepository<ApiKey, Long> {
 
     List<ApiKey> findByUserOrderByCreatedAtDesc(User user);
 
-    List<ApiKey> findByUserAndEnabledTrue(User user);
-
-    boolean existsByKeyHash(String keyHash);
-
     @Modifying
     @Query("UPDATE ApiKey a SET a.lastUsedAt = :now WHERE a.id = :id")
     void updateLastUsedAt(@Param("id") Long id, @Param("now") LocalDateTime now);
