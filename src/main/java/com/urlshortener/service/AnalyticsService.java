@@ -4,7 +4,6 @@ import com.urlshortener.dto.AnalyticsResponse;
 import com.urlshortener.entity.ClickAnalytics;
 import com.urlshortener.entity.Url;
 import com.urlshortener.entity.User;
-import com.urlshortener.exception.BadRequestException;
 import com.urlshortener.repository.ClickAnalyticsRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -60,7 +59,7 @@ public class AnalyticsService {
     public AnalyticsResponse getAnalytics(String shortCode, User user, int days) {
         log.debug("Fetching analytics for shortCode: {} by user: {} (days: {})", shortCode, user.getEmail(), days);
         Url url = urlService.getUrlByShortCode(shortCode);
-        validateOwnership(url, user);
+        urlService.validateOwnership(url, user);
 
         LocalDateTime now = LocalDateTime.now();
         long totalClicks = url.getClickCount();
@@ -185,9 +184,4 @@ public class AnalyticsService {
         return value.substring(0, maxLength);
     }
 
-    private void validateOwnership(Url url, User user) {
-        if (url.getUser() == null || !url.getUser().getId().equals(user.getId())) {
-            throw new BadRequestException("You don't have permission to access analytics for this URL");
-        }
-    }
 }

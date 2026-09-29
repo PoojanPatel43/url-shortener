@@ -245,7 +245,7 @@ public class UrlService {
         return shortCode;
     }
 
-    private void validateOwnership(Url url, User user) {
+    public void validateOwnership(Url url, User user) {
         if (url.getUser() == null || !url.getUser().getId().equals(user.getId())) {
             throw new BadRequestException("You don't have permission to access this URL");
         }
