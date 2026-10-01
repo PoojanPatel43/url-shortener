@@ -33,21 +33,7 @@ public class UserService {
         User fullUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        Long totalUrls = urlRepository.countByUser(fullUser);
-        Long totalClicks = urlRepository.getTotalClicksByUser(fullUser);
-
-        log.debug("User profile stats - URLs: {}, Total clicks: {}", totalUrls, totalClicks);
-
-        return UserResponse.builder()
-                .id(fullUser.getId())
-                .email(fullUser.getEmail())
-                .name(fullUser.getName())
-                .role(fullUser.getRole().name())
-                .enabled(fullUser.getEnabled())
-                .totalUrls(totalUrls)
-                .totalClicks(totalClicks != null ? totalClicks : 0L)
-                .createdAt(fullUser.getCreatedAt())
-                .build();
+        return mapToUserResponse(fullUser);
     }
 
     @Transactional
@@ -85,7 +71,23 @@ public class UserService {
         userRepository.save(fullUser);
         log.info("User profile updated: {}", fullUser.getEmail());
 
-        return getCurrentUser(fullUser);
+        return mapToUserResponse(fullUser);
+    }
+
+    private UserResponse mapToUserResponse(User user) {
+        Long totalUrls = urlRepository.countByUser(user);
+        Long totalClicks = urlRepository.getTotalClicksByUser(user);
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().name())
+                .enabled(user.getEnabled())
+                .totalUrls(totalUrls)
+                .totalClicks(totalClicks != null ? totalClicks : 0L)
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 
     @Transactional
