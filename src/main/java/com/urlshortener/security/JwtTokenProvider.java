@@ -28,6 +28,7 @@ public class JwtTokenProvider {
     private static final String ISSUER = "url-shortener";
 
     private SecretKey signingKey;
+    private JwtParser jwtParser;
 
     @PostConstruct
     private void init() {
@@ -37,6 +38,11 @@ public class JwtTokenProvider {
         } else {
             signingKey = Keys.hmacShaKeyFor(keyBytes);
         }
+
+        jwtParser = Jwts.parser()
+                .requireIssuer(ISSUER)
+                .verifyWith(signingKey)
+                .build();
     }
 
     public String generateAccessToken(String email) {
@@ -53,23 +59,14 @@ public class JwtTokenProvider {
     }
 
     public String getEmailFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .requireIssuer(ISSUER)
-                .verifyWith(signingKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-
-        return claims.getSubject();
+        return jwtParser.parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .requireIssuer(ISSUER)
-                    .verifyWith(signingKey)
-                    .build()
-                    .parseSignedClaims(token);
+            jwtParser.parseSignedClaims(token);
             return true;
         } catch (MalformedJwtException ex) {
             log.warn("Invalid JWT token: {}", ex.getMessage());
