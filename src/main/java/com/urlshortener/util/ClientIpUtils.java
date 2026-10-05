@@ -12,6 +12,18 @@ public final class ClientIpUtils {
 
     private ClientIpUtils() {}
 
+    /**
+     * Checks whether the request targets infrastructure paths (actuator, swagger, api-docs, favicon)
+     * that should be excluded from authentication and rate limiting filters.
+     */
+    public static boolean isInfrastructurePath(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.startsWith("/api/actuator") ||
+               path.startsWith("/api/swagger") ||
+               path.startsWith("/api/api-docs") ||
+               path.equals("/favicon.ico");
+    }
+
     public static String getClientIp(HttpServletRequest request) {
         for (String header : PROXY_HEADERS) {
             String ip = request.getHeader(header);
