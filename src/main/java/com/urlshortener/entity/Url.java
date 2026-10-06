@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -33,6 +34,7 @@ public class Url {
     @Column(name = "original_url", nullable = false, columnDefinition = "TEXT")
     private String originalUrl;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -52,6 +54,7 @@ public class Url {
     @Builder.Default
     private Boolean isActive = true;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "url", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ClickAnalytics> clickAnalytics = new ArrayList<>();

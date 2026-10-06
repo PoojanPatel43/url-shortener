@@ -44,10 +44,12 @@ public class User {
     @Builder.Default
     private Boolean enabled = true;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Url> urls = new ArrayList<>();
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ApiKey> apiKeys = new ArrayList<>();
