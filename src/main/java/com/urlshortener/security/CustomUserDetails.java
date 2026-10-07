@@ -7,7 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
@@ -27,7 +27,7 @@ public class CustomUserDetails implements UserDetails {
         this.name = user.getName();
         this.role = user.getRole();
         this.enabled = user.getEnabled();
-        this.authorities = Collections.singletonList(
+        this.authorities = List.of(
                 new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
         );
     }
