@@ -35,8 +35,8 @@ public class AdminService {
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startOfDay = now.toLocalDate().atStartOfDay();
-        LocalDateTime startOfWeek = now.minusDays(7);
-        LocalDateTime startOfMonth = now.minusDays(30);
+        LocalDateTime startOfWeek = now.minusDays(7).toLocalDate().atStartOfDay();
+        LocalDateTime startOfMonth = now.minusDays(30).toLocalDate().atStartOfDay();
 
         long totalUsers = userRepository.count();
         long newUsersToday = userRepository.countNewUsersSince(startOfDay);
