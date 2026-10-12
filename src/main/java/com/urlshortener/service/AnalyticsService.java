@@ -34,16 +34,17 @@ public class AnalyticsService {
     public void recordClick(String shortCode, String ipAddress, String userAgent, String referer) {
         try {
             Url url = urlService.getUrlByShortCode(shortCode);
-            String browser = parseBrowser(userAgent);
+            String lowerUa = userAgent != null ? userAgent.toLowerCase() : null;
+            String browser = parseBrowser(lowerUa);
 
             ClickAnalytics analytics = ClickAnalytics.builder()
                     .url(url)
                     .ipAddress(truncate(ipAddress, MAX_IP_LENGTH))
                     .userAgent(truncate(userAgent, MAX_USER_AGENT_LENGTH))
                     .referer(truncate(referer, MAX_REFERER_LENGTH))
-                    .deviceType(parseDeviceType(userAgent))
+                    .deviceType(parseDeviceType(lowerUa))
                     .browser(browser)
-                    .os(parseOperatingSystem(userAgent))
+                    .os(parseOperatingSystem(lowerUa))
                     .build();
 
             clickAnalyticsRepository.save(analytics);
@@ -128,7 +129,6 @@ public class AnalyticsService {
 
     private String parseDeviceType(String userAgent) {
         if (userAgent == null) return "Unknown";
-        userAgent = userAgent.toLowerCase();
 
         if (userAgent.contains("mobile") || (userAgent.contains("android") && !userAgent.contains("tablet"))) {
             return "Mobile";
@@ -141,7 +141,6 @@ public class AnalyticsService {
 
     private String parseBrowser(String userAgent) {
         if (userAgent == null) return "Unknown";
-        userAgent = userAgent.toLowerCase();
 
         if (userAgent.contains("edg")) {
             return "Edge";
@@ -160,7 +159,6 @@ public class AnalyticsService {
 
     private String parseOperatingSystem(String userAgent) {
         if (userAgent == null) return "Unknown";
-        userAgent = userAgent.toLowerCase();
 
         if (userAgent.contains("windows")) {
             return "Windows";
