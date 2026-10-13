@@ -8,6 +8,7 @@ import com.urlshortener.entity.User;
 import com.urlshortener.exception.BadRequestException;
 import com.urlshortener.exception.ResourceNotFoundException;
 import com.urlshortener.repository.UrlRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
@@ -50,6 +51,13 @@ public class UrlService {
     private static final UrlValidator URL_VALIDATOR = new UrlValidator(new String[]{"http", "https"});
     private static final int MAX_SHORT_CODE_GENERATION_ATTEMPTS = 10;
     private static final int MIN_CUSTOM_ALIAS_LENGTH = 3;
+
+    private String normalizedBaseUrl;
+
+    @PostConstruct
+    private void init() {
+        normalizedBaseUrl = baseUrl.toLowerCase();
+    }
 
     @Transactional
     public UrlResponse createShortUrl(CreateUrlRequest request, User user) {
@@ -200,7 +208,6 @@ public class UrlService {
         }
 
         String normalizedUrl = url.toLowerCase();
-        String normalizedBaseUrl = baseUrl.toLowerCase();
         if (normalizedUrl.startsWith(normalizedBaseUrl)) {
             log.warn("Redirect loop attempt blocked (target starts with base URL)");
             throw new BadRequestException("Cannot shorten URLs that point to this service");
