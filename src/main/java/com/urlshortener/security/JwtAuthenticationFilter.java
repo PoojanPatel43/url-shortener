@@ -24,6 +24,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final WebAuthenticationDetailsSource DETAILS_SOURCE = new WebAuthenticationDetailsSource();
+
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailsService userDetailsService;
     private final ApiKeyAuthenticationService apiKeyAuthenticationService;
@@ -76,7 +78,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         null,
                         userDetails.getAuthorities()
                 );
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        authentication.setDetails(DETAILS_SOURCE.buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
