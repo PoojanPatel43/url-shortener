@@ -9,6 +9,7 @@ import com.urlshortener.repository.ClickAnalyticsRepository;
 import com.urlshortener.repository.RefreshTokenRepository;
 import com.urlshortener.repository.UrlRepository;
 import com.urlshortener.repository.UserRepository;
+import com.urlshortener.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -140,8 +141,8 @@ public class AdminService {
 
     private void preventSelfAction(Long targetUserId, String action) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof com.urlshortener.security.CustomUserDetails userDetails) {
-            if (userDetails.toUser().getId().equals(targetUserId)) {
+        if (principal instanceof CustomUserDetails userDetails) {
+            if (userDetails.getId().equals(targetUserId)) {
                 throw new BadRequestException("Cannot " + action + " your own account");
             }
         }
