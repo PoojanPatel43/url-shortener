@@ -74,7 +74,7 @@ public class UserService {
         return mapToUserResponse(fullUser);
     }
 
-    private UserResponse mapToUserResponse(User user) {
+    public UserResponse mapToUserResponse(User user) {
         Long totalUrls = urlRepository.countByUser(user);
         Long totalClicks = urlRepository.getTotalClicksByUser(user);
 
