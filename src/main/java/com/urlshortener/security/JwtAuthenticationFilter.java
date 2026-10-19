@@ -54,11 +54,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // Then, try JWT authentication
             String jwt = getJwtFromRequest(request);
-            if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
-                String email = jwtTokenProvider.getEmailFromToken(jwt);
-                log.debug("JWT authenticated user: {} for {} {}", email, request.getMethod(), request.getRequestURI());
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                setAuthentication(userDetails, request);
+            if (StringUtils.hasText(jwt)) {
+                String email = jwtTokenProvider.getEmailIfValid(jwt);
+                if (email != null) {
+                    log.debug("JWT authenticated user: {} for {} {}", email, request.getMethod(), request.getRequestURI());
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                    setAuthentication(userDetails, request);
+                }
             }
         } catch (DisabledException ex) {
             log.debug("Disabled account token used: {}", ex.getMessage());

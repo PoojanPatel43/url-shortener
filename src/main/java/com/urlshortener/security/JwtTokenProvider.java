@@ -64,6 +64,29 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
+    /**
+     * Validates the token and returns the email in a single parse,
+     * or null if the token is invalid.
+     */
+    public String getEmailIfValid(String token) {
+        try {
+            return jwtParser.parseSignedClaims(token)
+                    .getPayload()
+                    .getSubject();
+        } catch (MalformedJwtException ex) {
+            log.warn("Invalid JWT token: {}", ex.getMessage());
+        } catch (ExpiredJwtException ex) {
+            log.debug("Expired JWT token for subject: {}", ex.getClaims().getSubject());
+        } catch (UnsupportedJwtException ex) {
+            log.warn("Unsupported JWT token: {}", ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            log.warn("JWT claims string is empty: {}", ex.getMessage());
+        } catch (SecurityException ex) {
+            log.warn("Invalid JWT signature: {}", ex.getMessage());
+        }
+        return null;
+    }
+
     public boolean validateToken(String token) {
         try {
             jwtParser.parseSignedClaims(token);
