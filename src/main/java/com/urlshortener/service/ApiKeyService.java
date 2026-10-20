@@ -86,13 +86,7 @@ public class ApiKeyService {
 
     @Transactional
     public void revokeApiKey(Long keyId, User user) {
-        ApiKey apiKey = apiKeyRepository.findById(keyId)
-                .orElseThrow(() -> new ResourceNotFoundException("API key not found"));
-
-        if (!apiKey.getUser().getId().equals(user.getId())) {
-            throw new BadRequestException("You don't have permission to revoke this API key");
-        }
-
+        ApiKey apiKey = findAndValidateOwnership(keyId, user);
         apiKey.setEnabled(false);
         apiKeyRepository.save(apiKey);
         log.info("Revoked API key '{}' for user: {}", apiKey.getName(), user.getEmail());
@@ -100,15 +94,20 @@ public class ApiKeyService {
 
     @Transactional
     public void deleteApiKey(Long keyId, User user) {
+        ApiKey apiKey = findAndValidateOwnership(keyId, user);
+        apiKeyRepository.delete(apiKey);
+        log.info("Deleted API key '{}' for user: {}", apiKey.getName(), user.getEmail());
+    }
+
+    private ApiKey findAndValidateOwnership(Long keyId, User user) {
         ApiKey apiKey = apiKeyRepository.findById(keyId)
                 .orElseThrow(() -> new ResourceNotFoundException("API key not found"));
 
         if (!apiKey.getUser().getId().equals(user.getId())) {
-            throw new BadRequestException("You don't have permission to delete this API key");
+            throw new BadRequestException("You don't have permission to manage this API key");
         }
 
-        apiKeyRepository.delete(apiKey);
-        log.info("Deleted API key '{}' for user: {}", apiKey.getName(), user.getEmail());
+        return apiKey;
     }
 
     @Scheduled(cron = "${app.scheduler.api-key-cleanup-cron:0 30 2 * * *}")
