@@ -72,8 +72,10 @@ public class UrlService {
             }
         }
 
+        boolean hasCustomAlias = request.getCustomAlias() != null && !request.getCustomAlias().isBlank();
+
         String shortCode;
-        if (request.getCustomAlias() != null && !request.getCustomAlias().isBlank()) {
+        if (hasCustomAlias) {
             shortCode = validateAndGetCustomAlias(request.getCustomAlias());
         } else {
             shortCode = generateUniqueShortCode();
@@ -90,7 +92,7 @@ public class UrlService {
                 .shortCode(shortCode)
                 .originalUrl(request.getUrl())
                 .user(user)
-                .customAlias(request.getCustomAlias() != null && !request.getCustomAlias().isBlank())
+                .customAlias(hasCustomAlias)
                 .expiresAt(expiresAt)
                 .build();
 
