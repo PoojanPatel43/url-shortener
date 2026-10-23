@@ -50,8 +50,6 @@ public class UrlService {
 
     private static final UrlValidator URL_VALIDATOR = new UrlValidator(new String[]{"http", "https"});
     private static final int MAX_SHORT_CODE_GENERATION_ATTEMPTS = 10;
-    private static final int MIN_CUSTOM_ALIAS_LENGTH = 3;
-
     private String normalizedBaseUrl;
 
     @PostConstruct
@@ -217,19 +215,9 @@ public class UrlService {
     }
 
     private String validateAndGetCustomAlias(String alias) {
-        if (alias.length() < MIN_CUSTOM_ALIAS_LENGTH) {
-            log.debug("Custom alias too short: {} chars", alias.length());
-            throw new BadRequestException("Custom alias must be at least " + MIN_CUSTOM_ALIAS_LENGTH + " characters");
-        }
-
         if (alias.length() > maxCustomAliasLength) {
             log.debug("Custom alias too long: {} chars", alias.length());
             throw new BadRequestException("Custom alias must not exceed " + maxCustomAliasLength + " characters");
-        }
-
-        if (!base62Encoder.isValid(alias)) {
-            log.debug("Custom alias contains invalid characters: {}", alias);
-            throw new BadRequestException("Custom alias can only contain alphanumeric characters");
         }
 
         if (urlRepository.existsByShortCode(alias)) {

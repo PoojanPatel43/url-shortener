@@ -19,15 +19,4 @@ public class Base62Encoder {
         return sb.toString();
     }
 
-    public boolean isValid(String str) {
-        if (str == null || str.isEmpty()) {
-            return false;
-        }
-        for (char c : str.toCharArray()) {
-            if (BASE62_CHARS.indexOf(c) == -1) {
-                return false;
-            }
-        }
-        return true;
-    }
 }
