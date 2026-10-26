@@ -69,7 +69,7 @@ public class AnalyticsService {
         long clicks7d = clickAnalyticsRepository.countClicksSince(url, now.minusDays(7));
         long clicks30d = clickAnalyticsRepository.countClicksSince(url, now.minusDays(30));
 
-        List<AnalyticsResponse.DailyClicks> dailyClicks = getDailyClicks(url, days);
+        List<AnalyticsResponse.DailyClicks> dailyClicks = getDailyClicks(url, days, now);
         List<AnalyticsResponse.StatEntry> topCountries = convertToStatEntries(
                 clickAnalyticsRepository.getCountryStats(url), totalClicks);
         List<AnalyticsResponse.StatEntry> topBrowsers = convertToStatEntries(
@@ -99,8 +99,8 @@ public class AnalyticsService {
                 .build();
     }
 
-    private List<AnalyticsResponse.DailyClicks> getDailyClicks(Url url, int days) {
-        LocalDateTime startDate = LocalDateTime.now().minusDays(days);
+    private List<AnalyticsResponse.DailyClicks> getDailyClicks(Url url, int days, LocalDateTime now) {
+        LocalDateTime startDate = now.minusDays(days);
         List<Object[]> results = clickAnalyticsRepository.getDailyClickStats(url, startDate);
 
         return results.stream()
