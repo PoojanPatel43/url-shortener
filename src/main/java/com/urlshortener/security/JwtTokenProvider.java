@@ -58,12 +58,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getEmailFromToken(String token) {
-        return jwtParser.parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
-    }
-
     /**
      * Validates the token and returns the email in a single parse,
      * or null if the token is invalid.
