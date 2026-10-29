@@ -29,17 +29,12 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponse getCurrentUser(User user) {
         log.debug("Fetching profile for user: {}", user.getId());
-
-        User fullUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        return mapToUserResponse(fullUser);
+        return mapToUserResponse(findById(user.getId()));
     }
 
     @Transactional
     public UserResponse updateUser(User user, UpdateUserRequest request) {
-        User fullUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User fullUser = findById(user.getId());
 
         if (request.getName() != null && !request.getName().isBlank()) {
             fullUser.setName(request.getName().trim());
@@ -92,10 +87,13 @@ public class UserService {
 
     @Transactional
     public void deleteUser(User user) {
-        User fullUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
+        User fullUser = findById(user.getId());
         userRepository.delete(fullUser);
         log.info("User deleted: {}", fullUser.getEmail());
+    }
+
+    private User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }
