@@ -1,6 +1,10 @@
 package com.urlshortener.controller;
 
-import com.urlshortener.dto.*;
+import com.urlshortener.dto.ApiResponse;
+import com.urlshortener.dto.AuthRequest;
+import com.urlshortener.dto.AuthResponse;
+import com.urlshortener.dto.RefreshTokenRequest;
+import com.urlshortener.dto.RegisterRequest;
 import com.urlshortener.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
