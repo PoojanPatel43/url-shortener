@@ -25,6 +25,7 @@ public class AnalyticsService {
     private static final int MAX_USER_AGENT_LENGTH = 512;
     private static final int MAX_REFERER_LENGTH = 2048;
     private static final int MAX_IP_LENGTH = 45;
+    private static final int MAX_STAT_ENTRIES = 10;
 
     private final ClickAnalyticsRepository clickAnalyticsRepository;
     private final UrlService urlService;
@@ -113,7 +114,7 @@ public class AnalyticsService {
 
     private List<AnalyticsResponse.StatEntry> convertToStatEntries(List<Object[]> stats, long totalClicks) {
         return stats.stream()
-                .limit(10)
+                .limit(MAX_STAT_ENTRIES)
                 .map(row -> {
                     String name = row[0] != null ? row[0].toString() : "Unknown";
                     Long count = (Long) row[1];
