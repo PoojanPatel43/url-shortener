@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Slf4j
+@RequiredArgsConstructor
 @SpringBootApplication
 @EnableCaching
 @EnableScheduling
@@ -24,10 +26,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class UrlShortenerApplication {
 
     private final Environment environment;
-
-    public UrlShortenerApplication(Environment environment) {
-        this.environment = environment;
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(UrlShortenerApplication.class, args);
