@@ -76,18 +76,14 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public UserResponse getUserById(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-
-        return userService.mapToUserResponse(user);
+        return userService.mapToUserResponse(findUserById(userId));
     }
 
     @Transactional
     public void toggleUserStatus(Long userId) {
         preventSelfAction(userId, "disable");
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        User user = findUserById(userId);
 
         preventAdminTargeting(user, "disable");
 
@@ -107,14 +103,18 @@ public class AdminService {
     public void deleteUser(Long userId) {
         preventSelfAction(userId, "delete");
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        User user = findUserById(userId);
 
         preventAdminTargeting(user, "delete");
 
         long userUrls = urlRepository.countByUser(user);
         userRepository.delete(user);
         log.warn("Admin deleted user: {} (had {} URLs)", user.getEmail(), userUrls);
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
     }
 
     private void preventAdminTargeting(User target, String action) {
