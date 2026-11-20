@@ -8,6 +8,7 @@ import com.urlshortener.repository.ClickAnalyticsRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,16 +72,17 @@ public class AnalyticsService {
         long clicks30d = clickAnalyticsRepository.countClicksSince(url, now.minusDays(30));
 
         List<AnalyticsResponse.DailyClicks> dailyClicks = getDailyClicks(url, days, now);
+        PageRequest topN = PageRequest.of(0, MAX_STAT_ENTRIES);
         List<AnalyticsResponse.StatEntry> topCountries = convertToStatEntries(
-                clickAnalyticsRepository.getCountryStats(url), totalClicks);
+                clickAnalyticsRepository.getCountryStats(url, topN), totalClicks);
         List<AnalyticsResponse.StatEntry> topBrowsers = convertToStatEntries(
-                clickAnalyticsRepository.getBrowserStats(url), totalClicks);
+                clickAnalyticsRepository.getBrowserStats(url, topN), totalClicks);
         List<AnalyticsResponse.StatEntry> topDevices = convertToStatEntries(
-                clickAnalyticsRepository.getDeviceStats(url), totalClicks);
+                clickAnalyticsRepository.getDeviceStats(url, topN), totalClicks);
         List<AnalyticsResponse.StatEntry> topOs = convertToStatEntries(
-                clickAnalyticsRepository.getOsStats(url), totalClicks);
+                clickAnalyticsRepository.getOsStats(url, topN), totalClicks);
         List<AnalyticsResponse.StatEntry> topReferers = convertToStatEntries(
-                clickAnalyticsRepository.getRefererStats(url), totalClicks);
+                clickAnalyticsRepository.getRefererStats(url, topN), totalClicks);
 
         log.debug("Analytics for {} - clicks: {}, unique: {}, 24h: {}, 7d: {}, 30d: {}",
                 shortCode, totalClicks, uniqueVisitors, clicks24h, clicks7d, clicks30d);
@@ -114,7 +116,6 @@ public class AnalyticsService {
 
     private List<AnalyticsResponse.StatEntry> convertToStatEntries(List<Object[]> stats, long totalClicks) {
         return stats.stream()
-                .limit(MAX_STAT_ENTRIES)
                 .map(row -> {
                     String name = row[0] != null ? row[0].toString() : "Unknown";
                     Long count = (Long) row[1];
