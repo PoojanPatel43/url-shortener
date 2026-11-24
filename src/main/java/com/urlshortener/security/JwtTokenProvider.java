@@ -81,10 +81,6 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public boolean validateToken(String token) {
-        return getEmailIfValid(token) != null;
-    }
-
     public long getJwtExpiration() {
         return jwtExpiration;
     }
