@@ -137,11 +137,10 @@ public class AuthService {
     }
 
     private String createRefreshToken(User user) {
-        long tokenCount = refreshTokenRepository.countByUser(user);
-        if (tokenCount >= MAX_REFRESH_TOKENS_PER_USER) {
-            List<RefreshToken> tokens = refreshTokenRepository.findByUserOrderByCreatedAtAsc(user);
-            long excess = tokenCount - MAX_REFRESH_TOKENS_PER_USER + 1;
-            refreshTokenRepository.deleteAll(tokens.subList(0, (int) excess));
+        List<RefreshToken> tokens = refreshTokenRepository.findByUserOrderByCreatedAtAsc(user);
+        if (tokens.size() >= MAX_REFRESH_TOKENS_PER_USER) {
+            int excess = tokens.size() - MAX_REFRESH_TOKENS_PER_USER + 1;
+            refreshTokenRepository.deleteAll(tokens.subList(0, excess));
             log.debug("Evicted {} oldest refresh tokens for user: {}", excess, user.getEmail());
         }
 
